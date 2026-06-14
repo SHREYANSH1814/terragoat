@@ -10,6 +10,7 @@ resource azurerm_kubernetes_cluster "k8s_cluster" {
     name       = "default"
     vm_size    = "Standard_D2_v2"
     node_count = 2
+    enable_node_public_ip = false
   }
   addon_profile {
     oms_agent {
@@ -20,8 +21,23 @@ resource azurerm_kubernetes_cluster "k8s_cluster" {
     }
   }
   role_based_access_control {
-    enabled = false
+    enabled = true
   }
+  api_server_authorized_ip_ranges = []
+
+  network_profile {
+    network_plugin    = "azure"
+    network_policy    = "calico"
+    load_balancer_sku = "standard"
+    outbound_type     = "loadBalancer"
+    enable_private_cluster = false
+  }
+
+  encryption_profile {
+    enabled = true
+    disk_encryption_set_id = var.disk_encryption_set_id
+  }
+
   tags = {
     git_commit           = "898d5beaec7ffdef6df0d7abecff407362e2a74e"
     git_file             = "terraform/azure/aks.tf"
@@ -31,5 +47,7 @@ resource azurerm_kubernetes_cluster "k8s_cluster" {
     git_org              = "bridgecrewio"
     git_repo             = "terragoat"
     yor_trace            = "6103d111-864e-42e5-899c-1864de281fd1"
+  }
+}
   }
 }
