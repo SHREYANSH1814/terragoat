@@ -2,6 +2,9 @@ resource "google_storage_bucket" "terragoat_website" {
   name          = "terragot-${var.environment}"
   location      = var.location
   force_destroy = true
+
+  public_access_prevention = "enforced"
+
   labels = {
     git_commit           = "2bdc0871a5f4505be58244029cc6485d45d7bb8e"
     git_file             = "terraform__gcp__gcs_tf"
@@ -12,6 +15,12 @@ resource "google_storage_bucket" "terragoat_website" {
     git_repo             = "terragoat"
     yor_trace            = "bd00cd2e-f53f-4daf-8d4d-74c47846c1cc"
   }
+}
+
+resource "google_storage_bucket_iam_binding" "allow_public_read" {
+  bucket  = google_storage_bucket.terragoat_website.id
+  members = ["allUsers"]
+  role    = "roles/storage.objectViewer"
 }
 
 resource "google_storage_bucket_iam_binding" "allow_public_read" {
