@@ -1,4 +1,5 @@
 resource "oci_objectstorage_bucket" "secretsquirrel" {
+  object_events_enabled = true
   # bucket can't emit object events
   # Storage hasn't versioning enabled
   # Storage isn't encrypted with Customer Managed Key
@@ -19,6 +20,8 @@ resource "oci_objectstorage_bucket" "secretsquirrel" {
     git_org              = "bridgecrewio"
     git_repo             = "terragoat"
     yor_trace            = "a854aa89-5141-4518-a5dc-0ffe3075f209"
+  }
+}
   }
 }
 
