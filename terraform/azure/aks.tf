@@ -10,6 +10,12 @@ resource azurerm_kubernetes_cluster "k8s_cluster" {
     name       = "default"
     vm_size    = "Standard_D2_v2"
     node_count = 2
+    enable_auto_scaling = false
+    max_pods            = 30
+    node_labels = {
+      "kubernetes.azure.com/mode" = "system"
+    }
+    node_taints = ["CriticalAddonsOnly=true:NoSchedule"]
   }
   addon_profile {
     oms_agent {
@@ -31,5 +37,7 @@ resource azurerm_kubernetes_cluster "k8s_cluster" {
     git_org              = "bridgecrewio"
     git_repo             = "terragoat"
     yor_trace            = "6103d111-864e-42e5-899c-1864de281fd1"
+  }
+}
   }
 }
