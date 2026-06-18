@@ -2,12 +2,12 @@ resource "oci_objectstorage_bucket" "secretsquirrel" {
   # bucket can't emit object events
   # Storage hasn't versioning enabled
   # Storage isn't encrypted with Customer Managed Key
-  # Object Storage is Public"
+  # Object Storage is not Public
   compartment_id        = oci_identity_compartment.tf-compartment.id
   name                  = "myreallysecretstore"
   namespace             = data.oci_objectstorage_namespace.example.namespace
   object_events_enabled = false
-  access_type           = "ObjectRead"
+  access_type           = "NoPublicAccess"
   metadata              = { "data" = "Blockofdata" }
   storage_tier          = "Standard"
   freeform_tags = {
@@ -19,6 +19,8 @@ resource "oci_objectstorage_bucket" "secretsquirrel" {
     git_org              = "bridgecrewio"
     git_repo             = "terragoat"
     yor_trace            = "a854aa89-5141-4518-a5dc-0ffe3075f209"
+  }
+}
   }
 }
 
