@@ -17,7 +17,7 @@ resource "google_compute_instance" "server" {
   can_ip_forward = true
 
   metadata = {
-    block-project-ssh-keys = false
+    block-project-ssh-keys = true
     enable-oslogin         = false
     serial-port-enable     = true
   }
