@@ -123,9 +123,57 @@ resource "aws_rds_cluster" "app8-rds-cluster" {
     git_org              = "matansha"
     git_repo             = "terragoat"
     yor_trace            = "af643747-0967-4251-8645-3b54882c2507"
+  }
 
+  lifecycle {
+    ignore_changes = [backup_retention_period]
   }
 }
+
+resource "aws_backup_plan" "app8_backup_plan" {
+  name = "app8-backup-plan"
+
+  rule {
+    rule_name         = "daily-backup"
+    target_vault_name = "default"
+    schedule          = "cron(0 12 * * ? *)"
+    lifecycle {
+      cold_storage_after = 30
+      delete_after       = 90
+    }
+  }
+}
+
+resource "aws_backup_selection" "app8_backup_selection" {
+  name          = "app8-backup-selection"
+  iam_role_arn  = aws_iam_role.backup_role.arn
+  backup_plan_id = aws_backup_plan.app8_backup_plan.id
+
+  resources = [aws_rds_cluster.app8-rds-cluster.arn]
+}
+
+resource "aws_iam_role" "backup_role" {
+  name = "app8_backup_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "backup.amazonaws.com"
+        }
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "backup_role_policy" {
+  role       = aws_iam_role.backup_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup"
+}
+
 
 resource "aws_rds_cluster" "app9-rds-cluster" {
   cluster_identifier      = "app9-rds-cluster"
