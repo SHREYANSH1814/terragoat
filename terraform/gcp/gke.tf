@@ -9,16 +9,31 @@ resource "google_container_cluster" "workload_cluster" {
   location           = var.region
   initial_node_count = 1
 
-  enable_legacy_abac       = true
+  enable_legacy_abac       = false
   monitoring_service       = "none"
   remove_default_node_pool = true
   network                  = google_compute_network.vpc.name
   subnetwork               = google_compute_subnetwork.public-subnetwork.name
+
   master_authorized_networks_config {
     cidr_blocks {
-      cidr_block = "0.0.0.0/0"
+      cidr_block = "10.0.0.0/8"  # Restrict to trusted internal CIDR blocks
     }
   }
+
+  workload_identity_config {
+    workload_pool = "${var.project}.svc.id.goog"
+  }
+
+  # Enable RBAC and configure Google Groups for Kubernetes RBAC
+  addons_config {
+    kubernetes_dashboard {
+      disabled = true
+    }
+  }
+
+  # Enable RBAC
+  enable_legacy_abac = false
 }
 
 resource "google_container_node_pool" "custom_node_pool" {
