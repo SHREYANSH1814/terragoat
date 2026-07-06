@@ -20,6 +20,7 @@ resource "azurerm_subnet" "example" {
   resource_group_name  = azurerm_resource_group.example.name
   virtual_network_name = azurerm_virtual_network.example.name
   address_prefixes     = ["10.0.0.0/24"]
+  network_security_group_id = azurerm_network_security_group.bad_sg.id
 }
 
 resource "azurerm_network_interface" "ni_linux" {
