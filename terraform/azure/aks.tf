@@ -7,10 +7,16 @@ resource azurerm_kubernetes_cluster "k8s_cluster" {
     type = "SystemAssigned"
   }
   default_node_pool {
-    name       = "default"
-    vm_size    = "Standard_D2_v2"
-    node_count = 2
-  }
+      name       = "default"
+      vm_size    = "Standard_D2_v2"
+      node_count = 2
+      enable_auto_scaling = false
+      max_pods            = 30
+      node_labels = {
+        "kubernetes.azure.com/mode" = "system"
+      }
+      node_taints = ["CriticalAddonsOnly=true:NoSchedule"]
+    }
   addon_profile {
     oms_agent {
       enabled = false
