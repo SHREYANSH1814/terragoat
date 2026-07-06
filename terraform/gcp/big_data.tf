@@ -15,6 +15,10 @@ resource "google_sql_database_instance" "master_instance" {
     backup_configuration {
       enabled = false
     }
+    database_flags {
+      name  = "log_disconnections"
+      value = "on"
+    }
   }
 }
 
