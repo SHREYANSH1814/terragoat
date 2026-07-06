@@ -50,6 +50,7 @@ resource "aws_rds_cluster" "app4-rds-cluster" {
   cluster_identifier      = "app4-rds-cluster"
   allocated_storage       = 10
   backup_retention_period = 15
+  kms_key_id              = "arn:aws:kms:us-east-1:123456789012:key/your-kms-key-id"
   tags = {
     git_commit           = "079fe74f6b96d887c245664fbd8cf676c92f20e5"
     git_file             = "terraform/aws/rds.tf"
