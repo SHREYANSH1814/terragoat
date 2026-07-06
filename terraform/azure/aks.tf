@@ -20,7 +20,11 @@ resource azurerm_kubernetes_cluster "k8s_cluster" {
     }
   }
   role_based_access_control {
-    enabled = false
+    enabled = true
+  }
+  secrets_store_csi_driver {
+    enabled = true
+    rotation_poll_interval = "2m"
   }
   tags = {
     git_commit           = "898d5beaec7ffdef6df0d7abecff407362e2a74e"
