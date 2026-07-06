@@ -27,6 +27,8 @@ resource azurerm_app_service "app-service1" {
   https_only          = false
   site_config {
     min_tls_version = "1.1"
+    detailed_error_logging_enabled = true
+    failed_request_tracing_enabled = true
   }
   tags = {
     git_commit           = "81738b80d571fa3034633690d13ffb460e1e7dea"
@@ -35,7 +37,7 @@ resource azurerm_app_service "app-service1" {
     git_last_modified_by = "Adin.Ermie@outlook.com"
     git_modifiers        = "Adin.Ermie/nimrodkor"
     git_org              = "bridgecrewio"
-    git_repo             = "terragoat"
+    git_repo             = "terragoot"
     yor_trace            = "13be096d-c599-46e5-bf54-51c6e9732858"
   }
 }
