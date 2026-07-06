@@ -4,6 +4,14 @@ resource "azurerm_key_vault" "example" {
   resource_group_name = azurerm_resource_group.example.name
   tenant_id           = data.azurerm_client_config.current.tenant_id
   sku_name            = "premium"
+
+  network_acls {
+    default_action             = "Deny"
+    bypass                    = "AzureServices"
+    ip_rules                  = []
+    virtual_network_subnet_ids = []
+  }
+
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
     object_id = data.azurerm_client_config.current.object_id
@@ -15,6 +23,7 @@ resource "azurerm_key_vault" "example" {
       "set",
     ]
   }
+
   tags = merge({
     environment = var.environment
     terragoat   = true
