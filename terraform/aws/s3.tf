@@ -46,6 +46,20 @@ resource "aws_s3_bucket" "financials" {
   bucket        = "${local.resource_prefix.value}-financials"
   acl           = "private"
   force_destroy = true
+
+  lifecycle_rule {
+    id      = "log"
+    enabled = true
+
+    expiration {
+      days = 90
+    }
+
+    noncurrent_version_expiration {
+      days = 30
+    }
+  }
+
   tags = merge({
     Name        = "${local.resource_prefix.value}-financials"
     Environment = local.resource_prefix.value
