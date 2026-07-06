@@ -24,9 +24,10 @@ resource azurerm_app_service "app-service1" {
   location            = var.location
   name                = "terragoat-app-service-${var.environment}${random_integer.rnd_int.result}"
   resource_group_name = azurerm_resource_group.example.name
-  https_only          = false
+  https_only          = true
   site_config {
     min_tls_version = "1.1"
+    client_cert_enabled = true
   }
   tags = {
     git_commit           = "81738b80d571fa3034633690d13ffb460e1e7dea"
