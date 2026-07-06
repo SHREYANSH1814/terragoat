@@ -24,6 +24,12 @@ resource "azurerm_mssql_server" "mssql1" {
   version                      = "12.0"
   administrator_login          = "missadministrator"
   administrator_login_password = "AdminPassword123!"
+  extended_auditing_policy {
+    storage_endpoint           = azurerm_storage_account.security_storage_account.primary_blob_endpoint
+    storage_account_access_key = azurerm_storage_account.security_storage_account.primary_access_key
+    retention_in_days         = 20
+    audit_actions_and_groups  = ["SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP", "FAILED_DATABASE_AUTHENTICATION_GROUP", "BATCH_COMPLETED_GROUP"]
+  }
   tags = {
     git_commit           = "c6f8caa51942284d02465518822685897ad90141"
     git_file             = "terraform/azure/mssql.tf"
