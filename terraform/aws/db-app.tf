@@ -241,6 +241,7 @@ data "aws_ami" "amazon-linux-2" {
 }
 
 resource "aws_instance" "db_app" {
+  ebs_optimized = true
   # ec2 have plain text secrets in user data
   ami                  = data.aws_ami.amazon-linux-2.id
   instance_type        = "t2.nano"
