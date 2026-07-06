@@ -11,9 +11,14 @@ resource "google_sql_database_instance" "master_instance" {
         name  = "WWW"
         value = "0.0.0.0/0"
       }
+      enable_private_path_for_google_cloud_services = true
     }
     backup_configuration {
       enabled = false
+    }
+    database_flags {
+      name  = "log_hostname"
+      value = "on"
     }
   }
 }
