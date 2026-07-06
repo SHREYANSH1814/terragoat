@@ -14,7 +14,7 @@ resource "google_compute_instance" "server" {
     subnetwork = google_compute_subnetwork.public-subnetwork.name
     access_config {}
   }
-  can_ip_forward = true
+  can_ip_forward = false
 
   metadata = {
     block-project-ssh-keys = false
