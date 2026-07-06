@@ -114,6 +114,9 @@ resource "aws_rds_cluster" "app8-rds-cluster" {
   cluster_identifier      = "app8-rds-cluster"
   allocated_storage       = 10
   backup_retention_period = 25
+
+  enabled_cloudwatch_logs_exports = ["audit"]
+
   tags = {
     git_commit           = "079fe74f6b96d887c245664fbd8cf676c92f20e5"
     git_file             = "terraform/aws/rds.tf"
@@ -123,7 +126,6 @@ resource "aws_rds_cluster" "app8-rds-cluster" {
     git_org              = "matansha"
     git_repo             = "terragoat"
     yor_trace            = "af643747-0967-4251-8645-3b54882c2507"
-
   }
 }
 
