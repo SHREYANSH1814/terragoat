@@ -10,6 +10,8 @@ resource azurerm_kubernetes_cluster "k8s_cluster" {
     name       = "default"
     vm_size    = "Standard_D2_v2"
     node_count = 2
+    enable_disk_encryption = true
+    disk_encryption_set_id = azurerm_disk_encryption_set.example.id
   }
   addon_profile {
     oms_agent {
