@@ -5,10 +5,11 @@ resource "google_compute_network" "vpc" {
 }
 
 resource "google_compute_subnetwork" "public-subnetwork" {
-  name          = "terragoat-${var.environment}-public-subnetwork"
-  ip_cidr_range = "10.0.0.0/24"
-  region        = var.region
-  network       = google_compute_network.vpc.id
+  name                    = "terragoat-${var.environment}-public-subnetwork"
+  ip_cidr_range           = "10.0.0.0/24"
+  region                  = var.region
+  network                 = google_compute_network.vpc.id
+  private_ip_google_access = true
 
   secondary_ip_range {
     range_name    = "tf-test-secondary-range-update1"
