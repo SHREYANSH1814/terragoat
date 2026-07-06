@@ -22,6 +22,13 @@ resource azurerm_kubernetes_cluster "k8s_cluster" {
   role_based_access_control {
     enabled = false
   }
+  linux_profile {
+    admin_username = "aksuser"
+    ssh_key {
+      key_data = var.ssh_public_key
+    }
+  }
+  enable_rbac = true
   tags = {
     git_commit           = "898d5beaec7ffdef6df0d7abecff407362e2a74e"
     git_file             = "terraform/azure/aks.tf"
