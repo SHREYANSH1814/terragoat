@@ -4,6 +4,13 @@ resource "azurerm_key_vault" "example" {
   resource_group_name = azurerm_resource_group.example.name
   tenant_id           = data.azurerm_client_config.current.tenant_id
   sku_name            = "premium"
+
+  network_acls {
+    default_action             = "Deny"
+    bypass                    = "AzureServices"
+    virtual_network_subnet_ids = [azurerm_subnet.example.id]
+  }
+
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
     object_id = data.azurerm_client_config.current.object_id
@@ -15,6 +22,7 @@ resource "azurerm_key_vault" "example" {
       "set",
     ]
   }
+
   tags = merge({
     environment = var.environment
     terragoat   = true
@@ -28,6 +36,40 @@ resource "azurerm_key_vault" "example" {
     git_repo             = "terragoat"
     yor_trace            = "79afeacc-248a-4015-a4fa-76a6a57f06e2"
   })
+}
+
+resource "azurerm_private_endpoint" "example" {
+  name                = "example-private-endpoint"
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+  subnet_id           = azurerm_subnet.example.id
+
+  private_service_connection {
+    name                           = "example-privateserviceconnection"
+    private_connection_resource_id = azurerm_key_vault.example.id
+    is_manual_connection           = false
+    subresource_names              = ["vault"]
+  }
+}
+
+resource "azurerm_private_dns_zone" "example" {
+  name                = "privatelink.vaultcore.azure.net"
+  resource_group_name = azurerm_resource_group.example.name
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "example" {
+  name                  = "example-link"
+  resource_group_name   = azurerm_resource_group.example.name
+  private_dns_zone_name = azurerm_private_dns_zone.example.name
+  virtual_network_id    = azurerm_virtual_network.example.id
+}
+
+resource "azurerm_private_dns_a_record" "example" {
+  name                = azurerm_key_vault.example.name
+  zone_name           = azurerm_private_dns_zone.example.name
+  resource_group_name = azurerm_resource_group.example.name
+  ttl                 = 300
+  records             = [azurerm_private_endpoint.example.private_service_connection[0].private_ip_address]
 }
 
 resource "azurerm_key_vault_key" "generated" {
