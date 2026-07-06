@@ -7,6 +7,9 @@ resource "google_compute_instance" "server" {
   boot_disk {
     initialize_params {
       image = "debian-cloud/debian-9"
+      disk_encryption_key {
+        raw_key = var.csek_raw_key
+      }
     }
     auto_delete = true
   }
