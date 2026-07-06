@@ -4,16 +4,17 @@ resource "aws_elb" "weblb" {
 
   listener {
     instance_port     = 8000
-    instance_protocol = "http"
-    lb_port           = 80
-    lb_protocol       = "http"
+    instance_protocol = "https"
+    lb_port           = 443
+    lb_protocol       = "https"
+    ssl_certificate_id = var.ssl_certificate_id
   }
 
   health_check {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = "HTTP:8000/"
+    target              = "HTTPS:8000/"
     interval            = 30
   }
 
