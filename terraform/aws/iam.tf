@@ -1,22 +1,11 @@
-resource "aws_iam_user" "user" {
-  name          = "${local.resource_prefix.value}-user"
-  force_destroy = true
+# Removed aws_iam_user resource to enforce access control exclusively through AWS SSO
+# Access keys and user policies tied to IAM users are also removed to prevent direct IAM user access
+# Instead, configure AWS SSO and assign permissions via SSO groups and roles
 
-  tags = merge({
-    Name        = "${local.resource_prefix.value}-user"
-    Environment = local.resource_prefix.value
-    }, {
-    git_commit           = "d68d2897add9bc2203a5ed0632a5cdd8ff8cefb0"
-    git_file             = "terraform/aws/iam.tf"
-    git_last_modified_at = "2020-06-16 14:46:24"
-    git_last_modified_by = "nimrodkor@gmail.com"
-    git_modifiers        = "nimrodkor"
-    git_org              = "bridgecrewio"
-    git_repo             = "terragoat"
-    yor_trace            = "9b45b298-c1ea-426a-9644-610780021eaa"
-  })
+# This Terraform file should be updated to manage SSO assignments and roles only
 
-}
+# No aws_iam_user resource defined here
+
 
 resource "aws_iam_access_key" "user" {
   user = aws_iam_user.user.name
