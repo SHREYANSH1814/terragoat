@@ -5,6 +5,13 @@ resource "azurerm_storage_account" "security_storage_account" {
   account_tier              = "Standard"
   account_replication_type  = "LRS"
   enable_https_traffic_only = true
+
+  network_rules {
+    default_action             = "Deny"
+    bypass                    = ["AzureServices"]
+    virtual_network_subnet_ids = [azurerm_subnet.private_endpoint_subnet.id]
+  }
+
   tags = {
     git_commit           = "a1d1c1ce31a1bde6dafa188846d90eca82abe5fd"
     git_file             = "terraform/azure/mssql.tf"
@@ -14,6 +21,42 @@ resource "azurerm_storage_account" "security_storage_account" {
     git_org              = "bridgecrewio"
     git_repo             = "terragoat"
     yor_trace            = "4b504d4d-608c-45fe-ae56-807bde6d969f"
+  }
+}
+
+resource "azurerm_subnet" "private_endpoint_subnet" {
+  name                 = "private-endpoint-subnet"
+  resource_group_name  = azurerm_resource_group.example.name
+  virtual_network_name = azurerm_virtual_network.example.name
+  address_prefixes     = ["10.0.1.0/24"]
+
+  delegations {
+    name = "delegation"
+    service_delegation {
+      name    = "Microsoft.Network/virtualNetworks/subnets"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+    }
+  }
+}
+
+resource "azurerm_virtual_network" "example" {
+  name                = "example-vnet"
+  address_space       = ["10.0.0.0/16"]
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+}
+
+resource "azurerm_private_endpoint" "storage_account_private_endpoint" {
+  name                = "storageaccount-private-endpoint"
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+  subnet_id           = azurerm_subnet.private_endpoint_subnet.id
+
+  private_service_connection {
+    name                           = "storageaccount-privatesc"
+    private_connection_resource_id = azurerm_storage_account.security_storage_account.id
+    is_manual_connection           = false
+    subresource_names              = ["blob"]
   }
 }
 
