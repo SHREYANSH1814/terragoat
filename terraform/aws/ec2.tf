@@ -272,6 +272,14 @@ resource "aws_s3_bucket" "flowbucket" {
   bucket        = "${local.resource_prefix.value}-flowlogs"
   force_destroy = true
 
+  notification {
+    lambda_function {
+      events = ["s3:ObjectCreated:*"]
+      lambda_function_arn = aws_lambda_function.example.arn
+    }
+    # Alternatively, you can configure sns_topic or queue here
+  }
+
   tags = merge({
     Name        = "${local.resource_prefix.value}-flowlogs"
     Environment = local.resource_prefix.value
