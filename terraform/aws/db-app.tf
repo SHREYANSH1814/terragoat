@@ -212,12 +212,13 @@ resource "aws_iam_role_policy" "ec2policy" {
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Action": [
-        "s3:*",
-        "ec2:*",
-        "rds:*"
-      ],
       "Effect": "Allow",
+      "Action": [
+        "ec2:Describe*",
+        "rds:Describe*",
+        "s3:GetObject",
+        "s3:ListBucket"
+      ],
       "Resource": "*"
     }
   ]
