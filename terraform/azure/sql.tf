@@ -26,6 +26,14 @@ resource "azurerm_sql_server" "example" {
     git_repo             = "terragoat"
     yor_trace            = "e5ec3432-e61f-4244-b59e-9ecc24ddd4cb"
   })
+
+  extended_auditing_policy {
+    storage_endpoint                        = azurerm_storage_account.example.primary_blob_endpoint
+    storage_account_access_key              = azurerm_storage_account.example.primary_access_key
+    retention_in_days                       = 90
+    audit_actions_and_groups                = ["SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP", "FAILED_DATABASE_AUTHENTICATION_GROUP", "BATCH_COMPLETED_GROUP"]
+    is_azure_monitor_target_enabled        = false
+  }
 }
 
 resource "azurerm_mssql_server_security_alert_policy" "example" {
