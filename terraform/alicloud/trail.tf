@@ -9,6 +9,10 @@ resource "alicloud_actiontrail_trail" "fail" {
 }
 
 resource "alicloud_oss_bucket" "trail" {
+  logging {
+    target_bucket = alicloud_oss_bucket.trail_logging.bucket
+    target_prefix = "log/"
+  }
 
   tags = {
     git_commit           = "c2ff052009d49c65e6af551eb1506abc73b5976c"
@@ -20,6 +24,10 @@ resource "alicloud_oss_bucket" "trail" {
     git_repo             = "terragoat"
     yor_trace            = "9ce7077b-8195-4e71-aec6-ed1f769555dc"
   }
+}
+
+resource "alicloud_oss_bucket" "trail_logging" {
+  acl = "log-delivery-write"
 }
 
 resource "alicloud_ram_role" "trail" {
