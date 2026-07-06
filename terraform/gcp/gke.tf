@@ -28,4 +28,8 @@ resource "google_container_node_pool" "custom_node_pool" {
   node_config {
     image_type = "Ubuntu"
   }
+
+  upgrade_settings {
+    auto_upgrade = true
+  }
 }
