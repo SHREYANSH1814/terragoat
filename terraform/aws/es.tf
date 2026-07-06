@@ -2,6 +2,11 @@ resource "aws_elasticsearch_domain" "monitoring-framework" {
   domain_name           = "tg-${var.environment}-es"
   elasticsearch_version = "2.3"
 
+  vpc_options {
+    subnet_ids = var.subnet_ids
+    security_group_ids = var.security_group_ids
+  }
+
   cluster_config {
     instance_type            = "t2.small.elasticsearch"
     instance_count           = 1
@@ -26,7 +31,15 @@ resource "aws_elasticsearch_domain" "monitoring-framework" {
     yor_trace            = "95131dec-d7c9-49bb-9aff-eb0e2736603b"
   }
 }
+variable "subnet_ids" {
+  description = "List of subnet IDs for the VPC"
+  type        = list(string)
+}
 
+variable "security_group_ids" {
+  description = "List of security group IDs for the VPC"
+  type        = list(string)
+}
 data aws_iam_policy_document "policy" {
   statement {
     actions = ["es:*"]
