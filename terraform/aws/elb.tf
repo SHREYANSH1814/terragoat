@@ -17,6 +17,12 @@ resource "aws_elb" "weblb" {
     interval            = 30
   }
 
+  access_logs {
+    bucket  = aws_s3_bucket.elb_logs.bucket
+    enabled = true
+    prefix  = "weblb-logs"
+  }
+
   subnets                     = [aws_subnet.web_subnet.id]
   security_groups             = [aws_security_group.web-node.id]
   instances                   = [aws_instance.web_host.id]
