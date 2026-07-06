@@ -8,8 +8,8 @@ resource "google_sql_database_instance" "master_instance" {
     ip_configuration {
       ipv4_enabled = true
       authorized_networks {
-        name  = "WWW"
-        value = "0.0.0.0/0"
+        name  = "trusted_network"
+        value = var.trusted_network_cidr
       }
     }
     backup_configuration {
