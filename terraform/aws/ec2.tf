@@ -118,6 +118,23 @@ resource "aws_vpc" "web_vpc" {
   cidr_block           = "172.16.0.0/16"
   enable_dns_hostnames = true
   enable_dns_support   = true
+
+  default_security_group {
+    ingress {
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_blocks = []
+    }
+
+    egress {
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_blocks = []
+    }
+  }
+
   tags = merge({
     Name = "${local.resource_prefix.value}-vpc"
     }, {
