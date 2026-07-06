@@ -125,6 +125,31 @@ resource "aws_s3_bucket" "logs" {
     }
   }
   force_destroy = true
+
+  replication_configuration {
+    role = aws_iam_role.replication_role.arn
+
+    rules {
+      id     = "replication-rule-1"
+      status = "Enabled"
+
+      destination {
+        bucket        = aws_s3_bucket.logs_replica.arn
+        storage_class = "STANDARD"
+      }
+
+      filter {
+        prefix = ""
+      }
+
+      source_selection_criteria {
+        sse_kms_encrypted_objects {
+          status = "Enabled"
+        }
+      }
+    }
+  }
+
   tags = merge({
     Name        = "${local.resource_prefix.value}-logs"
     Environment = local.resource_prefix.value
