@@ -40,6 +40,10 @@ resource "aws_lambda_function" "analysis_lambda" {
 
   runtime = "nodejs12.x"
 
+  tracing_config {
+    mode = "PassThrough"
+  }
+
   environment {
     variables = {
       access_key = "AKIAIOSFODNN7EXAMPLE"
