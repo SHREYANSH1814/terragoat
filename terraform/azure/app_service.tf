@@ -48,7 +48,13 @@ resource azurerm_app_service "app-service2" {
   https_only          = true
 
   auth_settings {
-    enabled = false
+    enabled = true
+    default_provider = "AzureActiveDirectory"
+    issuer = "https://sts.windows.net/${var.tenant_id}/"
+    client_id = var.client_id
+    client_secret_setting_name = "AAD_CLIENT_SECRET"
+    token_store_enabled = true
+    allowed_audiences = ["api://default"]
   }
   tags = {
     git_commit           = "5c6b5d60a8aa63a5d37e60f15185d13a967f0542"
