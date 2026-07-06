@@ -46,6 +46,9 @@ resource "aws_lambda_function" "analysis_lambda" {
       secret_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
     }
   }
+
+  reserved_concurrent_executions = 5
+
   tags = {
     git_commit           = "5c6b5d60a8aa63a5d37e60f15185d13a967f0542"
     git_file             = "terraform/aws/lambda.tf"
