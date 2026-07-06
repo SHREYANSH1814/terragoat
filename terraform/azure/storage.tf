@@ -47,6 +47,11 @@ resource "azurerm_storage_account" "example" {
       retention_policy_days = 10
     }
   }
+  blob_properties {
+    delete_retention_policy {
+      days = 7
+    }
+  }
   tags = {
     git_commit           = "5c6b5d60a8aa63a5d37e60f15185d13a967f0542"
     git_file             = "terraform/azure/storage.tf"
