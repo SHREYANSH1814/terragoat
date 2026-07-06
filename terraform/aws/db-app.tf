@@ -21,6 +21,9 @@ resource "aws_db_instance" "default" {
   monitoring_interval     = 0
   publicly_accessible     = true
 
+  enabled_cloudwatch_logs_exports = ["error", "general", "slowquery"]
+
+
   tags = merge({
     Name        = "${local.resource_prefix.value}-rds"
     Environment = local.resource_prefix.value
