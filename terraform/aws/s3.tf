@@ -70,6 +70,19 @@ resource "aws_s3_bucket" "operations" {
   versioning {
     enabled = true
   }
+  lifecycle_rule {
+    id      = "log"
+    enabled = true
+
+    expiration {
+      days = 365
+    }
+
+    noncurrent_version_expiration {
+      days = 90
+    }
+  }
+
   force_destroy = true
   tags = merge({
     Name        = "${local.resource_prefix.value}-operations"
