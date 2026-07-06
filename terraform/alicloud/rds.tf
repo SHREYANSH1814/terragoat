@@ -17,6 +17,10 @@ resource "alicloud_db_instance" "seeme" {
     name  = "connect_timeout"
     value = "50"
   }
+  parameters {
+    name  = "sql_collector_retention_period"
+    value = "181"
+  }
   tags = {
     git_commit           = "c2ff052009d49c65e6af551eb1506abc73b5976c"
     git_file             = "terraform/alicloud/rds.tf"
