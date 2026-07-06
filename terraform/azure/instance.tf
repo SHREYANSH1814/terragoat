@@ -52,6 +52,9 @@ resource azurerm_windows_virtual_machine "windows_machine" {
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
+    encryption {
+      enabled = true
+    }
   }
 
   source_image_reference {
