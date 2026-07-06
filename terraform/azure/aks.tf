@@ -10,6 +10,9 @@ resource azurerm_kubernetes_cluster "k8s_cluster" {
     name       = "default"
     vm_size    = "Standard_D2_v2"
     node_count = 2
+    enable_node_public_ip = false
+    node_taints = []
+    enable_encryption_at_host = true
   }
   addon_profile {
     oms_agent {
@@ -19,8 +22,23 @@ resource azurerm_kubernetes_cluster "k8s_cluster" {
       enabled = true
     }
   }
+
+  api_server_authorized_ip_ranges = []
+
+  network_profile {
+    network_plugin    = "azure"
+    network_policy    = "azure"
+    load_balancer_sku = "standard"
+    outbound_type     = "loadBalancer"
+  }
+
+  encryption_at_host_enabled = true
+
+  storage_profile {
+    disk_encryption_set_id = null
+  }
   role_based_access_control {
-    enabled = false
+    enabled = true
   }
   tags = {
     git_commit           = "898d5beaec7ffdef6df0d7abecff407362e2a74e"
