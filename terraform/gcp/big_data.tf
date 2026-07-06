@@ -20,10 +20,8 @@ resource "google_sql_database_instance" "master_instance" {
 
 resource "google_bigquery_dataset" "dataset" {
   dataset_id = "terragoat_${var.environment}_dataset"
-  access {
-    special_group = "allAuthenticatedUsers"
-    role          = "READER"
-  }
+  # Removed public access to ensure dataset is not publicly accessible
+  # No access block defined here to restrict access to authorized users only
   labels = {
     git_commit           = "2bdc0871a5f4505be58244029cc6485d45d7bb8e"
     git_file             = "terraform__gcp__big_data_tf"
