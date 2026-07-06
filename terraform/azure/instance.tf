@@ -61,6 +61,8 @@ resource azurerm_windows_virtual_machine "windows_machine" {
     version   = "latest"
   }
 
+  # Ensure no VM extensions are installed by not declaring any extension blocks
+
   tags = merge({
     terragoat   = true
     environment = var.environment
