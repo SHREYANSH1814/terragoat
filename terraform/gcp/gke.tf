@@ -14,6 +14,13 @@ resource "google_container_cluster" "workload_cluster" {
   remove_default_node_pool = true
   network                  = google_compute_network.vpc.name
   subnetwork               = google_compute_subnetwork.public-subnetwork.name
+
+  private_cluster_config {
+    enable_private_nodes    = true
+    enable_private_endpoint = false
+    master_ipv4_cidr_block  = "172.16.0.0/28"
+  }
+
   master_authorized_networks_config {
     cidr_blocks {
       cidr_block = "0.0.0.0/0"
