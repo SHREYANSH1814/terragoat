@@ -27,6 +27,16 @@ resource azurerm_app_service "app-service1" {
   https_only          = false
   site_config {
     min_tls_version = "1.1"
+    http_logs {
+      file_system {
+        retention_in_days = 7
+        retention_in_mb   = 35
+      }
+      azure_blob_storage {
+        retention_in_days = 7
+        sas_url           = var.http_logs_sas_url
+      }
+    }
   }
   tags = {
     git_commit           = "81738b80d571fa3034633690d13ffb460e1e7dea"
