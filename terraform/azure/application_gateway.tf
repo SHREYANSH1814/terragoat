@@ -1,4 +1,27 @@
 resource "azurerm_application_gateway" "network" {
+
+  ssl_certificate {
+    name     = "appGatewaySslCert"
+    data     = filebase64("path/to/certificate.pfx")
+    password = "yourPfxPassword"
+  }
+
+  probe {
+    name                = "appGatewayProbe"
+    protocol            = "Https"
+    host                = "yourbackendhost"
+    path                = "/health"
+    interval            = 30
+    timeout             = 30
+    unhealthy_threshold = 3
+  }
+
+  waf_configuration {
+    enabled            = true
+    firewall_mode      = "Prevention"
+    rule_set_type      = "OWASP"
+    rule_set_version   = "3.2"
+  }
   name                = "example-appgateway"
   resource_group_name = "example-resourceGroup"
   location            = "example --West-US"
@@ -34,16 +57,21 @@ resource "azurerm_application_gateway" "network" {
     name                  = local.http_setting_name
     cookie_based_affinity = "Disabled"
     path                  = "/path1/"
-    port                  = 80
-    protocol              = "Http"
+    port                  = 443
+    protocol              = "Https"
     request_timeout       = 60
+    trusted_root_certificate_names = []
+    pick_host_name_from_backend_address = false
+    probe_enabled         = true
+    probe_name            = "appGatewayProbe"
   }
 
   http_listener {
     name                           = local.listener_name
     frontend_ip_configuration_name = local.frontend_ip_configuration_name
     frontend_port_name             = local.frontend_port_name
-    protocol                       = "Http"
+    protocol                       = "Https"
+    ssl_certificate_name           = "appGatewaySslCert"
   }
 
   request_routing_rule {
