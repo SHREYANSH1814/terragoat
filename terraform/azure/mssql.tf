@@ -198,10 +198,7 @@ resource "azurerm_mssql_server_security_alert_policy" "alertpolicy4" {
   state                      = "Enabled"
   storage_endpoint           = azurerm_storage_account.security_storage_account.primary_blob_endpoint
   storage_account_access_key = azurerm_storage_account.security_storage_account.primary_access_key
-  disabled_alerts = [
-    "Sql_Injection",
-    "Data_Exfiltration"
-  ]
+  disabled_alerts = []
   retention_days  = 20
   email_addresses = ["securityengineer@bridgecrew.io"]
 }
@@ -212,10 +209,7 @@ resource "azurerm_mssql_server_security_alert_policy" "alertpolicy5" {
   state                      = "Enabled"
   storage_endpoint           = azurerm_storage_account.security_storage_account.primary_blob_endpoint
   storage_account_access_key = azurerm_storage_account.security_storage_account.primary_access_key
-  disabled_alerts = [
-    "Sql_Injection",
-    "Data_Exfiltration"
-  ]
+  disabled_alerts = []
   retention_days = 20
 }
 
@@ -225,10 +219,7 @@ resource "azurerm_mssql_server_security_alert_policy" "alertpolicy6" {
   state                      = "Enabled"
   storage_endpoint           = azurerm_storage_account.security_storage_account.primary_blob_endpoint
   storage_account_access_key = azurerm_storage_account.security_storage_account.primary_access_key
-  disabled_alerts = [
-    "Sql_Injection",
-    "Data_Exfiltration"
-  ]
+  disabled_alerts = []
   retention_days  = 20
   email_addresses = ["securityengineer@bridgecrew.io"]
 }
@@ -239,10 +230,7 @@ resource "azurerm_mssql_server_security_alert_policy" "alertpolicy7" {
   state                      = "Enabled"
   storage_endpoint           = azurerm_storage_account.security_storage_account.primary_blob_endpoint
   storage_account_access_key = azurerm_storage_account.security_storage_account.primary_access_key
-  disabled_alerts = [
-    "Sql_Injection",
-    "Data_Exfiltration"
-  ]
+  disabled_alerts = []
   retention_days  = 20
   email_addresses = ["securityengineer@bridgecrew.io"]
 }
