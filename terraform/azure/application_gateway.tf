@@ -4,8 +4,8 @@ resource "azurerm_application_gateway" "network" {
   location            = "example --West-US"
 
   sku {
-    name     = "Standard_Small"
-    tier     = "Standard"
+    name     = "WAF_v2"
+    tier     = "WAF_v2"
     capacity = 2
   }
 
@@ -18,12 +18,17 @@ resource "azurerm_application_gateway" "network" {
     name = "name"
     port = "port-no"
   }
-  ####Missing WAF block: As per azure best practices, it is important to have a web application firewall enabled at application gateway.
-
 
   frontend_ip_configuration {
     name                 = "name"
     public_ip_address_id = "Ip-address"
+  }
+
+  waf_configuration {
+    enabled            = true
+    firewall_mode      = "Prevention"
+    rule_set_type      = "OWASP"
+    rule_set_version   = "3.2"
   }
 
   backend_address_pool {
@@ -53,6 +58,7 @@ resource "azurerm_application_gateway" "network" {
     backend_address_pool_name  = local.backend_address_pool_name
     backend_http_settings_name = local.http_setting_name
   }
+
   tags = {
     git_commit           = "b07a42ebd74b8f0ba647e20b872474b1c29b4814"
     git_file             = "terraform/azure/application_gateway.tf"
