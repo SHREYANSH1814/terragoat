@@ -14,6 +14,10 @@ resource "alicloud_db_instance" "seeme" {
     value = "ON"
   }
   parameters {
+    name  = "log_connections"
+    value = "ON"
+  }
+  parameters {
     name  = "connect_timeout"
     value = "50"
   }
