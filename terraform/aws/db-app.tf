@@ -18,8 +18,10 @@ resource "aws_db_instance" "default" {
   backup_retention_period = 0
   storage_encrypted       = false
   skip_final_snapshot     = true
-  monitoring_interval     = 0
+  monitoring_interval     = 60
+  monitoring_role_arn     = aws_iam_role.rds_monitoring_role.arn
   publicly_accessible     = true
+
 
   tags = merge({
     Name        = "${local.resource_prefix.value}-rds"
@@ -420,5 +422,29 @@ output "db_app_public_dns" {
 output "db_endpoint" {
   description = "DB Endpoint"
   value       = aws_db_instance.default.endpoint
+}
+
+
+resource "aws_iam_role" "rds_monitoring_role" {
+  name = "rds-monitoring-role-${local.resource_prefix.value}"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "monitoring.rds.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "rds_monitoring_role_policy_attachment" {
+  role       = aws_iam_role.rds_monitoring_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
 }
 
