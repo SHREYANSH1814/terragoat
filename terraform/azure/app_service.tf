@@ -47,6 +47,10 @@ resource azurerm_app_service "app-service2" {
   resource_group_name = azurerm_resource_group.example.name
   https_only          = true
 
+  site_config {
+    detailed_error_messages_enabled = true
+  }
+
   auth_settings {
     enabled = false
   }
