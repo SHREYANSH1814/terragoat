@@ -77,9 +77,9 @@ resource azurerm_network_security_group "bad_sg" {
     name                       = "AllowSSH"
     priority                   = 200
     protocol                   = "TCP"
-    source_address_prefix      = "*"
+    source_address_prefix      = "10.0.0.0/24"
     source_port_range          = "*"
-    destination_port_range     = "22-22"
+    destination_port_range     = "22"
     destination_address_prefix = "*"
   }
 
@@ -89,9 +89,9 @@ resource azurerm_network_security_group "bad_sg" {
     name                       = "AllowRDP"
     priority                   = 300
     protocol                   = "TCP"
-    source_address_prefix      = "*"
+    source_address_prefix      = "10.0.0.0/24"
     source_port_range          = "*"
-    destination_port_range     = "3389-3389"
+    destination_port_range     = "3389"
     destination_address_prefix = "*"
   }
   tags = {
