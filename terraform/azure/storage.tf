@@ -8,6 +8,7 @@ resource "azurerm_managed_disk" "example" {
   encryption_settings {
     enabled = false
   }
+  network_access_policy = "Deny"
   tags = {
     git_commit           = "d68d2897add9bc2203a5ed0632a5cdd8ff8cefb0"
     git_file             = "terraform/azure/storage.tf"
