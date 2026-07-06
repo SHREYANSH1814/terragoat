@@ -4,9 +4,10 @@ resource "aws_elb" "weblb" {
 
   listener {
     instance_port     = 8000
-    instance_protocol = "http"
-    lb_port           = 80
-    lb_protocol       = "http"
+    instance_protocol = "https"
+    lb_port           = 443
+    lb_protocol       = "https"
+    ssl_certificate_id = aws_acm_certificate.example.arn
   }
 
   health_check {
@@ -37,4 +38,12 @@ resource "aws_elb" "weblb" {
     git_repo             = "terragoat"
     yor_trace            = "b4a83ce9-9a45-43b4-b6d9-1783c282f702"
   })
+}
+resource "aws_acm_certificate" "example" {
+  domain_name       = "example.com"
+  validation_method = "DNS"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
