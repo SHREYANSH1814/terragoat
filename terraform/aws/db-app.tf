@@ -1,4 +1,5 @@
 resource "aws_db_instance" "default" {
+  auto_minor_version_upgrade = true
 
   name                   = var.dbname
   engine                 = "mysql"
