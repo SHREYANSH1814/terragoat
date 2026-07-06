@@ -272,6 +272,19 @@ resource "aws_s3_bucket" "flowbucket" {
   bucket        = "${local.resource_prefix.value}-flowlogs"
   force_destroy = true
 
+  lifecycle_rule {
+    id      = "log-expiration"
+    enabled = true
+
+    expiration {
+      days = 90
+    }
+
+    noncurrent_version_expiration {
+      days = 90
+    }
+  }
+
   tags = merge({
     Name        = "${local.resource_prefix.value}-flowlogs"
     Environment = local.resource_prefix.value
