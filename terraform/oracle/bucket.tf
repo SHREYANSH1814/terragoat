@@ -1,6 +1,6 @@
 resource "oci_objectstorage_bucket" "secretsquirrel" {
   # bucket can't emit object events
-  # Storage hasn't versioning enabled
+  # Storage has versioning enabled
   # Storage isn't encrypted with Customer Managed Key
   # Object Storage is Public"
   compartment_id        = oci_identity_compartment.tf-compartment.id
@@ -10,6 +10,7 @@ resource "oci_objectstorage_bucket" "secretsquirrel" {
   access_type           = "ObjectRead"
   metadata              = { "data" = "Blockofdata" }
   storage_tier          = "Standard"
+  versioning            = "Enabled"
   freeform_tags = {
     git_commit           = "7a7b957091945f77ecef712a92ac719c8d9a6498"
     git_file             = "terraform/oracle/bucket.tf"
