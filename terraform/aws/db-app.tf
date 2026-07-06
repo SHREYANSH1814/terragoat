@@ -1,4 +1,5 @@
 resource "aws_db_instance" "default" {
+  iam_database_authentication_enabled = true
 
   name                   = var.dbname
   engine                 = "mysql"
