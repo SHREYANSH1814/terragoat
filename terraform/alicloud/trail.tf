@@ -1,11 +1,10 @@
 resource "alicloud_actiontrail_trail" "fail" {
-  # Action Trail not Logging for all regions
-  # Action Trail not Logging for all events
+  # Ensure Action Trail logs for all regions and all events
   trail_name         = "action-trail"
   oss_write_role_arn = alicloud_ram_role.trail.arn
   oss_bucket_name    = alicloud_oss_bucket.trail.bucket
-  event_rw           = "Read"
-  trail_region       = "cn-hangzhou"
+  event_rw           = "All"
+  is_multi_region_trail = true
 }
 
 resource "alicloud_oss_bucket" "trail" {
