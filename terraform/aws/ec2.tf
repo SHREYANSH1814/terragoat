@@ -1,20 +1,24 @@
 resource "aws_instance" "web_host" {
-  # ec2 have plain text secrets in user data
   ami           = "${var.ami}"
   instance_type = "t2.nano"
 
   vpc_security_group_ids = [
-  "${aws_security_group.web-node.id}"]
+    "${aws_security_group.web-node.id}"
+  ]
   subnet_id = "${aws_subnet.web_subnet.id}"
+
   user_data = <<EOF
 #! /bin/bash
 sudo apt-get update
 sudo apt-get install -y apache2
 sudo systemctl start apache2
 sudo systemctl enable apache2
-export AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMAAA
-export AWS_SECRET_ACCESS_KEY=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
-export AWS_DEFAULT_REGION=us-west-2
+# Fetch AWS credentials securely from AWS Secrets Manager or environment variables
+# Example: export AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY should be set in the environment or fetched securely
+# Avoid hardcoding secrets in user_data
+export AWS_ACCESS_KEY_ID=${var.aws_access_key_id}
+export AWS_SECRET_ACCESS_KEY=${var.aws_secret_access_key}
+export AWS_DEFAULT_REGION=${var.aws_region}
 echo "<h1>Deployed via Terraform</h1>" | sudo tee /var/www/html/index.html
 EOF
   tags = merge({
@@ -297,6 +301,23 @@ output "vpc_id" {
   value       = aws_vpc.web_vpc.id
 }
 
+variable "aws_access_key_id" {
+  description = "AWS Access Key ID"
+  type        = string
+  sensitive   = true
+}
+
+variable "aws_secret_access_key" {
+  description = "AWS Secret Access Key"
+  type        = string
+  sensitive   = true
+}
+
+variable "aws_region" {
+  description = "AWS Region"
+  type        = string
+  default     = "us-west-2"
+}
 output "public_subnet" {
   description = "The ID of the Public subnet"
   value       = aws_subnet.web_subnet.id
