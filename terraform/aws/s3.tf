@@ -46,6 +46,14 @@ resource "aws_s3_bucket" "financials" {
   bucket        = "${local.resource_prefix.value}-financials"
   acl           = "private"
   force_destroy = true
+
+  notification {
+    lambda_function {
+      lambda_function_arn = "arn:aws:lambda:region:account-id:function:function-name"
+      events              = ["s3:ObjectCreated:*", "s3:ObjectRemoved:*"]
+    }
+  }
+
   tags = merge({
     Name        = "${local.resource_prefix.value}-financials"
     Environment = local.resource_prefix.value
