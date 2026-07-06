@@ -9,7 +9,7 @@ resource "google_container_cluster" "workload_cluster" {
   location           = var.region
   initial_node_count = 1
 
-  enable_legacy_abac       = true
+  enable_legacy_abac       = false
   monitoring_service       = "none"
   remove_default_node_pool = true
   network                  = google_compute_network.vpc.name
@@ -17,6 +17,11 @@ resource "google_container_cluster" "workload_cluster" {
   master_authorized_networks_config {
     cidr_blocks {
       cidr_block = "0.0.0.0/0"
+    }
+  }
+  master_auth {
+    client_certificate_config {
+      issue_client_certificate = false
     }
   }
 }
