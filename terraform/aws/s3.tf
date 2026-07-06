@@ -5,6 +5,25 @@ resource "aws_s3_bucket" "data" {
   # bucket does not have versioning
   bucket        = "${local.resource_prefix.value}-data"
   force_destroy = true
+
+  versioning {
+    enabled = true
+  }
+
+  replication_configuration {
+    role = aws_iam_role.s3_replication_role.arn
+
+    rules {
+      id     = "replication-rule"
+      status = "Enabled"
+
+      destination {
+        bucket        = aws_s3_bucket.data_replica.arn
+        storage_class = "STANDARD"
+      }
+    }
+  }
+
   tags = merge({
     Name        = "${local.resource_prefix.value}-data"
     Environment = local.resource_prefix.value
@@ -19,6 +38,75 @@ resource "aws_s3_bucket" "data" {
     yor_trace            = "0874007d-903a-4b4c-945f-c9c233e13243"
   })
 }
+
+resource "aws_s3_bucket" "data_replica" {
+  bucket = "${local.resource_prefix.value}-data-replica"
+  acl    = "private"
+  force_destroy = true
+
+  versioning {
+    enabled = true
+  }
+
+  tags = {
+    Name        = "${local.resource_prefix.value}-data-replica"
+    Environment = local.resource_prefix.value
+  }
+}
+
+resource "aws_iam_role" "s3_replication_role" {
+  name = "s3-replication-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "s3.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "s3_replication_policy" {
+  name = "s3-replication-policy"
+  role = aws_iam_role.s3_replication_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetReplicationConfiguration",
+          "s3:ListBucket"
+        ]
+        Resource = aws_s3_bucket.data.arn
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObjectVersion",
+          "s3:GetObjectVersionAcl"
+        ]
+        Resource = "${aws_s3_bucket.data.arn}/*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:ReplicateObject",
+          "s3:ReplicateDelete",
+          "s3:ReplicateTags"
+        ]
+        Resource = "${aws_s3_bucket.data_replica.arn}/*"
+      }
+    ]
+  })
+}
+
 
 resource "aws_s3_bucket_object" "data_object" {
   bucket = aws_s3_bucket.data.id
