@@ -77,7 +77,7 @@ resource "azurerm_postgresql_server" "example" {
   sku_name                     = "B_Gen5_2"
   storage_mb                   = 5120
   backup_retention_days        = 7
-  geo_redundant_backup_enabled = false
+  geo_redundant_backup_enabled = true
   auto_grow_enabled            = true
   administrator_login          = "terragoat"
   administrator_login_password = "Aa12345678"
