@@ -9,6 +9,10 @@ resource "alicloud_actiontrail_trail" "fail" {
 }
 
 resource "alicloud_oss_bucket" "trail" {
+  encryption_configuration {
+    sse_algorithm = "KMS"
+    kms_master_key_id = var.kms_master_key_id
+  }
 
   tags = {
     git_commit           = "c2ff052009d49c65e6af551eb1506abc73b5976c"
