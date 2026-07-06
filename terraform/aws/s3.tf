@@ -1,10 +1,14 @@
 resource "aws_s3_bucket" "data" {
-  # bucket is public
-  # bucket is not encrypted
-  # bucket does not have access logs
-  # bucket does not have versioning
   bucket        = "${local.resource_prefix.value}-data"
   force_destroy = true
+
+  public_access_block {
+    block_public_acls       = true
+    block_public_policy     = true
+    ignore_public_acls      = true
+    restrict_public_buckets = true
+  }
+
   tags = merge({
     Name        = "${local.resource_prefix.value}-data"
     Environment = local.resource_prefix.value
