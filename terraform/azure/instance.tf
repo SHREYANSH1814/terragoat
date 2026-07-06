@@ -8,13 +8,13 @@ resource random_string "password" {
 
 resource azurerm_linux_virtual_machine "linux_machine" {
   admin_username                  = "terragoat-linux"
-  admin_password                  = random_string.password.result
+  # Remove admin_password to disable password authentication
   location                        = var.location
   name                            = "terragoat-linux"
   network_interface_ids           = [azurerm_network_interface.ni_linux.id]
   resource_group_name             = azurerm_resource_group.example.name
   size                            = "Standard_F2"
-  disable_password_authentication = false
+  disable_password_authentication = true
   source_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
