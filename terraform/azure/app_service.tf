@@ -25,9 +25,17 @@ resource azurerm_app_service "app-service1" {
   name                = "terragoat-app-service-${var.environment}${random_integer.rnd_int.result}"
   resource_group_name = azurerm_resource_group.example.name
   https_only          = false
+
   site_config {
     min_tls_version = "1.1"
+
+    azure_files_storage {
+      share_name          = azurerm_storage_share.example.name
+      storage_account_name = azurerm_storage_account.example.name
+      access_key          = azurerm_storage_account.example.primary_access_key
+    }
   }
+
   tags = {
     git_commit           = "81738b80d571fa3034633690d13ffb460e1e7dea"
     git_file             = "terraform/azure/app_service.tf"
