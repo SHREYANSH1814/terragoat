@@ -46,6 +46,25 @@ resource "aws_s3_bucket" "financials" {
   bucket        = "${local.resource_prefix.value}-financials"
   acl           = "private"
   force_destroy = true
+
+  versioning {
+    enabled = true
+  }
+
+  replication_configuration {
+    role = aws_iam_role.replication_role.arn
+
+    rules {
+      id     = "financials-replication-rule"
+      status = "Enabled"
+
+      destination {
+        bucket        = aws_s3_bucket.financials_replica.arn
+        storage_class = "STANDARD"
+      }
+    }
+  }
+
   tags = merge({
     Name        = "${local.resource_prefix.value}-financials"
     Environment = local.resource_prefix.value
@@ -59,7 +78,80 @@ resource "aws_s3_bucket" "financials" {
     git_repo             = "terragoat"
     yor_trace            = "0e012640-b597-4e5d-9378-d4b584aea913"
   })
+}
 
+resource "aws_s3_bucket" "financials_replica" {
+  bucket = "${local.resource_prefix.value}-financials-replica"
+  acl    = "private"
+  force_destroy = true
+
+  versioning {
+    enabled = true
+  }
+
+  tags = {
+    Name        = "${local.resource_prefix.value}-financials-replica"
+    Environment = local.resource_prefix.value
+  }
+}
+
+resource "aws_iam_role" "replication_role" {
+  name = "s3-replication-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "s3.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "replication_policy" {
+  name = "s3-replication-policy"
+  role = aws_iam_role.replication_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:GetReplicationConfiguration",
+          "s3:ListBucket"
+        ],
+        Resource = [
+          aws_s3_bucket.financials.arn
+        ]
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:GetObjectVersion",
+          "s3:GetObjectVersionAcl"
+        ],
+        Resource = [
+          "${aws_s3_bucket.financials.arn}/*"
+        ]
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:ReplicateObject",
+          "s3:ReplicateDelete",
+          "s3:ReplicateTags"
+        ],
+        Resource = [
+          "${aws_s3_bucket.financials_replica.arn}/*"
+        ]
+      }
+    ]
+  })
 }
 
 resource "aws_s3_bucket" "operations" {
