@@ -10,6 +10,7 @@ resource azurerm_kubernetes_cluster "k8s_cluster" {
     name       = "default"
     vm_size    = "Standard_D2_v2"
     node_count = 2
+    enable_encryption_at_host = true
   }
   addon_profile {
     oms_agent {
@@ -18,6 +19,19 @@ resource azurerm_kubernetes_cluster "k8s_cluster" {
     kube_dashboard {
       enabled = true
     }
+  }
+
+  api_server_authorized_ip_ranges = []
+
+  network_profile {
+    network_plugin    = "azure"
+    network_policy    = "azure"
+    load_balancer_sku = "standard"
+    outbound_type     = "loadBalancer"
+  }
+
+  encryption_profile {
+    enabled = true
   }
   role_based_access_control {
     enabled = false
