@@ -47,9 +47,14 @@ resource azurerm_app_service "app-service2" {
   resource_group_name = azurerm_resource_group.example.name
   https_only          = true
 
+  identity {
+    type = "SystemAssigned"
+  }
+
   auth_settings {
     enabled = false
   }
+
   tags = {
     git_commit           = "5c6b5d60a8aa63a5d37e60f15185d13a967f0542"
     git_file             = "terraform/azure/app_service.tf"
