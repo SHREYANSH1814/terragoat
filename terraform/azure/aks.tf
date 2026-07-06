@@ -10,6 +10,7 @@ resource azurerm_kubernetes_cluster "k8s_cluster" {
     name       = "default"
     vm_size    = "Standard_D2_v2"
     node_count = 2
+    node_taints = ["CriticalAddonsOnly=true:NoSchedule"]
   }
   addon_profile {
     oms_agent {
