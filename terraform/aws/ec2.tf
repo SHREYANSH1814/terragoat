@@ -1,4 +1,7 @@
 resource "aws_instance" "web_host" {
+  metadata_options {
+    http_tokens = "required"
+  }
   # ec2 have plain text secrets in user data
   ami           = "${var.ami}"
   instance_type = "t2.nano"
