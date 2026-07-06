@@ -42,8 +42,8 @@ resource "aws_lambda_function" "analysis_lambda" {
 
   environment {
     variables = {
-      access_key = "AKIAIOSFODNN7EXAMPLE"
-      secret_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+      access_key = var.access_key
+      secret_key = var.secret_key
     }
   }
   tags = {
@@ -56,4 +56,16 @@ resource "aws_lambda_function" "analysis_lambda" {
     git_repo             = "terragoat"
     yor_trace            = "f7d8bc47-e5d9-4b09-9d8f-e7b9724d826e"
   }
+}
+
+variable "access_key" {
+  description = "Access key for lambda environment"
+  type        = string
+  sensitive   = true
+}
+
+variable "secret_key" {
+  description = "Secret key for lambda environment"
+  type        = string
+  sensitive   = true
 }
