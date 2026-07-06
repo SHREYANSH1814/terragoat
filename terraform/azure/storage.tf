@@ -28,8 +28,8 @@ resource "azurerm_storage_account" "example" {
   account_replication_type = "GRS"
   queue_properties {
     logging {
-      delete                = false
-      read                  = false
+      delete                = true
+      read                  = true
       write                 = true
       version               = "1.0"
       retention_policy_days = 10
