@@ -29,6 +29,10 @@ EOF
   }
 }
 
+resource "aws_sqs_queue" "dlq" {
+  name = "${local.resource_prefix.value}-analysis-dlq"
+}
+
 resource "aws_lambda_function" "analysis_lambda" {
   # lambda have plain text secrets in environment variables
   filename      = "resources/lambda_function_payload.zip"
@@ -39,6 +43,10 @@ resource "aws_lambda_function" "analysis_lambda" {
   source_code_hash = "${filebase64sha256("resources/lambda_function_payload.zip")}"
 
   runtime = "nodejs12.x"
+
+  dead_letter_config {
+    target_arn = aws_sqs_queue.dlq.arn
+  }
 
   environment {
     variables = {
