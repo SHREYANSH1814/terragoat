@@ -70,6 +70,17 @@ resource "azurerm_mysql_server" "example" {
   }
 }
 
+resource "azurerm_mysql_server_security_alert_policy" "example" {
+  resource_group_name        = azurerm_resource_group.example.name
+  server_name                = azurerm_mysql_server.example.name
+  state                      = "Enabled"
+  email_account_admins       = true
+  retention_days             = 30
+  storage_endpoint           = azurerm_storage_account.example.primary_blob_endpoint
+  storage_account_access_key = azurerm_storage_account.example.primary_access_key
+  disabled_alerts            = []
+}
+
 resource "azurerm_postgresql_server" "example" {
   name                         = "terragoat-postgresql-${var.environment}${random_integer.rnd_int.result}"
   location                     = azurerm_resource_group.example.location
