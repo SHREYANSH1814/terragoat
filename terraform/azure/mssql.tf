@@ -81,6 +81,9 @@ resource "azurerm_mssql_server" "mssql4" {
   version                      = "12.0"
   administrator_login          = "missadministrator"
   administrator_login_password = "AdminPassword123!"
+
+  public_network_access_enabled = false
+
   tags = {
     git_commit           = "c6f8caa51942284d02465518822685897ad90141"
     git_file             = "terraform/azure/mssql.tf"
@@ -245,4 +248,22 @@ resource "azurerm_mssql_server_security_alert_policy" "alertpolicy7" {
   ]
   retention_days  = 20
   email_addresses = ["securityengineer@bridgecrew.io"]
+}
+
+resource "azurerm_private_endpoint" "mssql4_private_endpoint" {
+  name                = "mssql4-pe-${var.environment}${random_integer.rnd_int.result}"
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+  subnet_id           = azurerm_subnet.example.id
+
+  private_service_connection {
+    name                           = "mssql4-psc"
+    private_connection_resource_id = azurerm_mssql_server.mssql4.id
+    is_manual_connection           = false
+    subresource_names              = ["sqlServer"]
+  }
+
+  tags = {
+    environment = var.environment
+  }
 }
