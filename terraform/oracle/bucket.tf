@@ -1,4 +1,5 @@
 resource "oci_objectstorage_bucket" "secretsquirrel" {
+  access_type           = "NoPublicAccess"
   # bucket can't emit object events
   # Storage hasn't versioning enabled
   # Storage isn't encrypted with Customer Managed Key
