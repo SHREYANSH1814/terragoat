@@ -40,6 +40,8 @@ resource "aws_lambda_function" "analysis_lambda" {
 
   runtime = "nodejs12.x"
 
+  code_signing_config_arn = aws_lambda_code_signing_config.lambda_code_signing_config.arn
+
   environment {
     variables = {
       access_key = "AKIAIOSFODNN7EXAMPLE"
@@ -55,5 +57,19 @@ resource "aws_lambda_function" "analysis_lambda" {
     git_org              = "bridgecrewio"
     git_repo             = "terragoat"
     yor_trace            = "f7d8bc47-e5d9-4b09-9d8f-e7b9724d826e"
+  }
+}
+
+resource "aws_lambda_code_signing_config" "lambda_code_signing_config" {
+  allowed_publishers {
+    signing_profile_version_arns = ["arn:aws:signer:us-east-1:123456789012:/signing-profiles/MySigningProfile/abcd1234"]
+  }
+
+  policies {
+    untrusted_artifact_on_deployment = "Enforce"
+  }
+
+  tags = {
+    Name = "lambda-code-signing-config"
   }
 }
