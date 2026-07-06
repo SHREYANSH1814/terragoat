@@ -1,10 +1,24 @@
 resource "alicloud_oss_bucket" "bad_bucket" {
-  # Public and writeable bucket 
-  # Versioning isn't enabled
-  # Not Encrypted with a Customer Master Key and no Server side encryption
-  # Doesn't have access logging enabled" 
+  # Private bucket with restricted access
+  # Versioning enabled
+  # Server side encryption enabled
+  # Access logging enabled
   bucket = "wildwestfreeforall"
-  acl    = "public-read-write"
+  acl    = "private"
+  versioning {
+    enabled = true
+  }
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+  logging {
+    target_bucket = "log-bucket"
+    target_prefix = "log/"
+  }
   tags = {
     git_commit           = "9c114f23d311f787c137723e1f71b27a52f0adec"
     git_file             = "terraform/alicloud/bucket.tf"
