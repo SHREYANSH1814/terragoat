@@ -41,5 +41,7 @@ resource "aws_neptune_cluster_instance" "default" {
 resource "aws_neptune_cluster_snapshot" "default" {
   db_cluster_identifier          = aws_neptune_cluster.default.id
   db_cluster_snapshot_identifier = "resourcetestsnapshot1"
+  kms_key_id                     = var.kms_key_id
+  encrypted                     = true
 }
 
