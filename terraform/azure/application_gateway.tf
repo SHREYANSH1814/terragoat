@@ -16,7 +16,7 @@ resource "azurerm_application_gateway" "network" {
 
   frontend_port {
     name = "name"
-    port = "port-no"
+    port = 443
   }
   ####Missing WAF block: As per azure best practices, it is important to have a web application firewall enabled at application gateway.
 
@@ -34,16 +34,19 @@ resource "azurerm_application_gateway" "network" {
     name                  = local.http_setting_name
     cookie_based_affinity = "Disabled"
     path                  = "/path1/"
-    port                  = 80
-    protocol              = "Http"
+    port                  = 443
+    protocol              = "Https"
     request_timeout       = 60
+    pick_host_name_from_backend_address = true
+    trusted_root_certificate_names = [local.trusted_root_certificate_name]
   }
 
   http_listener {
     name                           = local.listener_name
     frontend_ip_configuration_name = local.frontend_ip_configuration_name
     frontend_port_name             = local.frontend_port_name
-    protocol                       = "Http"
+    protocol                       = "Https"
+    ssl_certificate_name           = local.ssl_certificate_name
   }
 
   request_routing_rule {
