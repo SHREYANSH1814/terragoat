@@ -70,6 +70,10 @@ resource "aws_s3_bucket" "operations" {
   versioning {
     enabled = true
   }
+  logging {
+    target_bucket = "${aws_s3_bucket.logs.id}"
+    target_prefix = "log/operations/"
+  }
   force_destroy = true
   tags = merge({
     Name        = "${local.resource_prefix.value}-operations"
