@@ -83,6 +83,14 @@ resource "azurerm_postgresql_server" "example" {
   administrator_login_password = "Aa12345678"
   version                      = "9.5"
   ssl_enforcement_enabled      = false
+  threat_detection_policy {
+    enabled            = true
+    email_account_admins = true
+    email_addresses    = ["security@yourdomain.com"]
+    retention_days     = 30
+    storage_account_access_key = azurerm_storage_account.example.primary_access_key
+    storage_endpoint   = azurerm_storage_account.example.primary_blob_endpoint
+  }
   tags = {
     git_commit           = "81738b80d571fa3034633690d13ffb460e1e7dea"
     git_file             = "terraform/azure/sql.tf"
