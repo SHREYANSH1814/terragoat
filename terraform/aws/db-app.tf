@@ -15,11 +15,12 @@ resource "aws_db_instance" "default" {
   password                = var.password
   apply_immediately       = true
   multi_az                = false
-  backup_retention_period = 0
-  storage_encrypted       = false
-  skip_final_snapshot     = true
+  backup_retention_period = 7
+  storage_encrypted       = true
+  skip_final_snapshot     = false
   monitoring_interval     = 0
   publicly_accessible     = true
+
 
   tags = merge({
     Name        = "${local.resource_prefix.value}-rds"
