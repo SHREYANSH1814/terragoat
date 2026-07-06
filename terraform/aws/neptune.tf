@@ -6,7 +6,8 @@ resource "aws_neptune_cluster" "default" {
   skip_final_snapshot                 = true
   iam_database_authentication_enabled = false
   apply_immediately                   = true
-  storage_encrypted                   = false
+  storage_encrypted                   = true
+  kms_key_id                         = var.kms_key_id
   tags = {
     git_commit           = "aa8fd16fd94cccf6af206e2f0922b5558f8ac514"
     git_file             = "terraform/aws/neptune.tf"
@@ -19,6 +20,10 @@ resource "aws_neptune_cluster" "default" {
   }
 }
 
+variable "kms_key_id" {
+  description = "The ARN of the KMS key to use for Neptune encryption"
+  type        = string
+}
 resource "aws_neptune_cluster_instance" "default" {
   count              = 1
   cluster_identifier = aws_neptune_cluster.default.id
