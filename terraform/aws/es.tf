@@ -27,14 +27,19 @@ resource "aws_elasticsearch_domain" "monitoring-framework" {
   }
 }
 
-data aws_iam_policy_document "policy" {
+data "aws_iam_policy_document" "policy" {
   statement {
-    actions = ["es:*"]
+    actions = ["es:ESHttpPost", "es:ESHttpPut", "es:ESHttpDelete"]
     principals {
       type        = "AWS"
       identifiers = ["*"]
     }
-    resources = ["*"]
+    resources = ["arn:aws:es:${var.region}:${data.aws_caller_identity.current.account_id}:domain/tg-${var.environment}-es/*"]
+    condition {
+      test     = "IpAddress"
+      variable = "aws:SourceIp"
+      values   = ["203.0.113.0/24"]
+    }
   }
 }
 
