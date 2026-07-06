@@ -14,6 +14,12 @@ resource "google_container_cluster" "workload_cluster" {
   remove_default_node_pool = true
   network                  = google_compute_network.vpc.name
   subnetwork               = google_compute_subnetwork.public-subnetwork.name
+
+  network_policy {
+    enabled = true
+    provider = "CALICO"
+  }
+
   master_authorized_networks_config {
     cidr_blocks {
       cidr_block = "0.0.0.0/0"
