@@ -142,3 +142,47 @@ resource "aws_rds_cluster" "app9-rds-cluster" {
     yor_trace            = "a0c98536-c751-4743-92f1-a106ce750249"
   }
 }
+
+resource "aws_backup_plan" "app9_backup_plan" {
+  name = "app9-backup-plan"
+
+  rule {
+    rule_name         = "daily-backup"
+    target_vault_name = "default"
+    schedule          = "cron(0 12 * * ? *)"
+    lifecycle {
+      cold_storage_after = 30
+      delete_after       = 90
+    }
+  }
+}
+
+resource "aws_backup_selection" "app9_backup_selection" {
+  name          = "app9-backup-selection"
+  iam_role_arn  = aws_iam_role.backup_role.arn
+  backup_plan_id = aws_backup_plan.app9_backup_plan.id
+
+  resources = [aws_rds_cluster.app9-rds-cluster.arn]
+}
+
+resource "aws_iam_role" "backup_role" {
+  name = "app9_backup_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "backup.amazonaws.com"
+        }
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "backup_role_policy" {
+  role       = aws_iam_role.backup_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup"
+}
