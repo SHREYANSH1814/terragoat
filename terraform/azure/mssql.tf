@@ -3,7 +3,7 @@ resource "azurerm_storage_account" "security_storage_account" {
   resource_group_name       = azurerm_resource_group.example.name
   location                  = azurerm_resource_group.example.location
   account_tier              = "Standard"
-  account_replication_type  = "LRS"
+  account_replication_type  = "GRS"
   enable_https_traffic_only = true
   tags = {
     git_commit           = "a1d1c1ce31a1bde6dafa188846d90eca82abe5fd"
