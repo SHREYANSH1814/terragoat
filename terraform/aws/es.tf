@@ -32,9 +32,9 @@ data aws_iam_policy_document "policy" {
     actions = ["es:*"]
     principals {
       type        = "AWS"
-      identifiers = ["*"]
+      identifiers = ["arn:aws:iam::123456789012:role/YourSpecificRole"]
     }
-    resources = ["*"]
+    resources = ["arn:aws:es:${var.region}:${var.account_id}:domain/tg-${var.environment}-es/*"]
   }
 }
 
