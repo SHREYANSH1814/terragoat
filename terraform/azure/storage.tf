@@ -26,6 +26,20 @@ resource "azurerm_storage_account" "example" {
   location                 = azurerm_resource_group.example.location
   account_tier             = "Standard"
   account_replication_type = "GRS"
+
+  encryption {
+    services {
+      blob {
+        enabled = true
+      }
+      file {
+        enabled = true
+      }
+    }
+    key_source = "Microsoft.Keyvault"
+    key_vault_key_id = var.customer_managed_key_id
+  }
+
   queue_properties {
     logging {
       delete                = false
@@ -47,6 +61,7 @@ resource "azurerm_storage_account" "example" {
       retention_policy_days = 10
     }
   }
+
   tags = {
     git_commit           = "5c6b5d60a8aa63a5d37e60f15185d13a967f0542"
     git_file             = "terraform/azure/storage.tf"
