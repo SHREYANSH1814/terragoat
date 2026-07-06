@@ -97,6 +97,20 @@ resource "aws_s3_bucket" "data_science" {
     target_bucket = "${aws_s3_bucket.logs.id}"
     target_prefix = "log/"
   }
+  replication_configuration {
+    role = aws_iam_role.s3_replication_role.arn
+    rules {
+      id     = "replication-rule"
+      status = "Enabled"
+      destination {
+        bucket        = "arn:aws:s3:::${local.resource_prefix.value}-data-science-replica"
+        storage_class = "STANDARD"
+      }
+      filter {
+        prefix = ""
+      }
+    }
+  }
   force_destroy = true
   tags = {
     git_commit           = "d68d2897add9bc2203a5ed0632a5cdd8ff8cefb0"
@@ -137,5 +151,76 @@ resource "aws_s3_bucket" "logs" {
     git_org              = "bridgecrewio"
     git_repo             = "terragoat"
     yor_trace            = "01946fe9-aae2-4c99-a975-e9b0d3a4696c"
+  })
+}
+resource "aws_s3_bucket" "data_science_replica" {
+  bucket        = "${local.resource_prefix.value}-data-science-replica"
+  acl           = "private"
+  versioning {
+    enabled = true
+  }
+  force_destroy = true
+  tags = {
+    Name        = "${local.resource_prefix.value}-data-science-replica"
+    Environment = local.resource_prefix.value
+  }
+}
+
+resource "aws_iam_role" "s3_replication_role" {
+  name = "s3-replication-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "s3.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "s3_replication_policy" {
+  name = "s3-replication-policy"
+  role = aws_iam_role.s3_replication_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetReplicationConfiguration",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          aws_s3_bucket.data_science.arn
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObjectVersion",
+          "s3:GetObjectVersionAcl"
+        ]
+        Resource = [
+          "${aws_s3_bucket.data_science.arn}/*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:ReplicateObject",
+          "s3:ReplicateDelete",
+          "s3:ReplicateTags"
+        ]
+        Resource = [
+          "${aws_s3_bucket.data_science_replica.arn}/*"
+        ]
+      }
+    ]
   })
 }
