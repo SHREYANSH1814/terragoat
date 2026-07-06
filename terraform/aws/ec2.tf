@@ -75,7 +75,7 @@ resource "aws_volume_attachment" "ebs_att" {
 }
 
 resource "aws_security_group" "web-node" {
-  # security group is open to the world in SSH port
+  # security group with restricted SSH access
   name        = "${local.resource_prefix.value}-sg"
   description = "${local.resource_prefix.value} Security Group"
   vpc_id      = aws_vpc.web_vpc.id
@@ -85,21 +85,21 @@ resource "aws_security_group" "web-node" {
     to_port   = 80
     protocol  = "tcp"
     cidr_blocks = [
-    "0.0.0.0/0"]
+      "0.0.0.0/0"]
   }
   ingress {
     from_port = 22
     to_port   = 22
     protocol  = "tcp"
     cidr_blocks = [
-    "0.0.0.0/0"]
+      "10.0.0.0/16"]
   }
   egress {
     from_port = 0
     to_port   = 0
     protocol  = "-1"
     cidr_blocks = [
-    "0.0.0.0/0"]
+      "0.0.0.0/0"]
   }
   depends_on = [aws_vpc.web_vpc]
   tags = {
