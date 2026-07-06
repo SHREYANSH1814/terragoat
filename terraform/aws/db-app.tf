@@ -218,7 +218,11 @@ resource "aws_iam_role_policy" "ec2policy" {
         "rds:*"
       ],
       "Effect": "Allow",
-      "Resource": "*"
+      "Resource": [
+        "arn:aws:s3:::example-bucket/*",
+        "arn:aws:ec2:region:account-id:instance/*",
+        "arn:aws:rds:region:account-id:db:*"
+      ]
     }
   ]
 }
