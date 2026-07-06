@@ -34,11 +34,16 @@ resource "azurerm_mssql_server_security_alert_policy" "example" {
   state                      = "Enabled"
   storage_endpoint           = azurerm_storage_account.example.primary_blob_endpoint
   storage_account_access_key = azurerm_storage_account.example.primary_access_key
-  disabled_alerts = [
-    "Sql_Injection",
-    "Data_Exfiltration"
-  ]
-  retention_days = 20
+  threat_detection_policy {
+    state                      = "Enabled"
+    email_account_admins       = true
+    email_addresses            = []
+    disabled_alerts            = []
+    retention_days            = 20
+    storage_endpoint           = azurerm_storage_account.example.primary_blob_endpoint
+    storage_account_access_key = azurerm_storage_account.example.primary_access_key
+    threat_detection_types     = ["All"]
+  }
 }
 
 resource "azurerm_mysql_server" "example" {
