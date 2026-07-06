@@ -59,6 +59,28 @@ resource aws_vpc "eks_vpc" {
   })
 }
 
+resource aws_default_security_group "default" {
+  vpc_id = aws_vpc.eks_vpc.id
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = []
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = []
+  }
+
+  tags = {
+    Name = "${local.resource_prefix.value}-default-sg"
+  }
+}
+
 resource aws_subnet "eks_subnet1" {
   vpc_id                  = aws_vpc.eks_vpc.id
   cidr_block              = "10.10.10.0/24"
