@@ -1,7 +1,7 @@
 resource "oci_objectstorage_bucket" "secretsquirrel" {
   # bucket can't emit object events
   # Storage hasn't versioning enabled
-  # Storage isn't encrypted with Customer Managed Key
+  # Storage is encrypted with Customer Managed Key
   # Object Storage is Public"
   compartment_id        = oci_identity_compartment.tf-compartment.id
   name                  = "myreallysecretstore"
@@ -10,6 +10,7 @@ resource "oci_objectstorage_bucket" "secretsquirrel" {
   access_type           = "ObjectRead"
   metadata              = { "data" = "Blockofdata" }
   storage_tier          = "Standard"
+  kms_key_id            = var.customer_managed_kms_key_id
   freeform_tags = {
     git_commit           = "7a7b957091945f77ecef712a92ac719c8d9a6498"
     git_file             = "terraform/oracle/bucket.tf"
@@ -20,6 +21,10 @@ resource "oci_objectstorage_bucket" "secretsquirrel" {
     git_repo             = "terragoat"
     yor_trace            = "a854aa89-5141-4518-a5dc-0ffe3075f209"
   }
+}
+variable "customer_managed_kms_key_id" {
+  description = "The OCID of the Customer Managed Key (CMK) to encrypt the bucket."
+  type        = string
 }
 
 
