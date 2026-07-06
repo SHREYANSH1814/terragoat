@@ -12,6 +12,9 @@ resource azurerm_kubernetes_cluster "k8s_cluster" {
     node_count = 2
   }
   addon_profile {
+    azure_policy {
+      enabled = true
+    }
     oms_agent {
       enabled = false
     }
