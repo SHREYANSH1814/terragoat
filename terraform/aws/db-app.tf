@@ -115,8 +115,9 @@ resource "aws_db_subnet_group" "default" {
 }
 
 resource "aws_security_group" "default" {
-  name   = "${local.resource_prefix.value}-rds-sg"
-  vpc_id = aws_vpc.web_vpc.id
+  name        = "${local.resource_prefix.value}-rds-sg"
+  description = "Security group for RDS instance"
+  vpc_id      = aws_vpc.web_vpc.id
 
   tags = merge({
     Name        = "${local.resource_prefix.value}-rds-sg"
@@ -135,11 +136,12 @@ resource "aws_security_group" "default" {
 
 resource "aws_security_group_rule" "ingress" {
   type              = "ingress"
-  from_port         = "3306"
-  to_port           = "3306"
+  from_port         = 3306
+  to_port           = 3306
   protocol          = "tcp"
   cidr_blocks       = ["${aws_vpc.web_vpc.cidr_block}"]
   security_group_id = aws_security_group.default.id
+  description       = "Allow MySQL access from VPC"
 }
 
 resource "aws_security_group_rule" "egress" {
@@ -148,7 +150,8 @@ resource "aws_security_group_rule" "egress" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.default.id}"
+  security_group_id = aws_security_group.default.id
+  description       = "Allow all outbound traffic"
 }
 
 
