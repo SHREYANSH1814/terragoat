@@ -1,4 +1,5 @@
 resource "alicloud_db_instance" "seeme" {
+  ssl_enabled = true
   # Is public due to Security IPS 0.0.0.0/0
   engine           = "MySQL"
   engine_version   = "5.6"
