@@ -16,12 +16,12 @@ resource "google_compute_subnetwork" "public-subnetwork" {
   }
 }
 
-resource "google_compute_firewall" "allow_all" {
-  name          = "terragoat-${var.environment}-firewall"
+resource "google_compute_firewall" "allow_ssh" {
+  name          = "terragoat-${var.environment}-allow-ssh"
   network       = google_compute_network.vpc.id
-  source_ranges = ["0.0.0.0/0"]
+  source_ranges = ["203.0.113.0/24"]  # Replace with trusted IP range(s)
   allow {
     protocol = "tcp"
-    ports    = ["0-65535"]
+    ports    = ["22"]
   }
 }
