@@ -21,6 +21,14 @@ resource "aws_db_instance" "default" {
   monitoring_interval     = 0
   publicly_accessible     = true
 
+  # Enable encryption in transit
+  enabled_cloudwatch_logs_exports = ["audit", "error", "general", "slowquery"]
+  performance_insights_enabled    = true
+  performance_insights_kms_key_id = aws_kms_key.rds_kms_key.arn
+
+  # Enforce SSL connections
+  parameter_group_name = aws_db_parameter_group.enforce_ssl.name
+
   tags = merge({
     Name        = "${local.resource_prefix.value}-rds"
     Environment = local.resource_prefix.value
@@ -40,6 +48,12 @@ resource "aws_db_instance" "default" {
     ignore_changes = ["password"]
   }
 }
+
+resource "aws_kms_key" "rds_kms_key" {
+  description             = "KMS key for RDS encryption"
+  deletion_window_in_days = 10
+}
+
 
 resource "aws_db_option_group" "default" {
   engine_name              = "mysql"
@@ -76,6 +90,12 @@ resource "aws_db_parameter_group" "default" {
   parameter {
     name         = "character_set_server"
     value        = "utf8"
+    apply_method = "immediate"
+  }
+
+  parameter {
+    name         = "rds.force_ssl"
+    value        = "1"
     apply_method = "immediate"
   }
 
