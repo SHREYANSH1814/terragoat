@@ -26,6 +26,11 @@ resource "azurerm_storage_account" "example" {
   location                 = azurerm_resource_group.example.location
   account_tier             = "Standard"
   account_replication_type = "GRS"
+  network_rules {
+    default_action             = "Deny"
+    bypass                     = ["Metrics"]
+    virtual_network_subnet_ids = [azurerm_subnet.example.id]
+  }
   queue_properties {
     logging {
       delete                = false
@@ -57,13 +62,4 @@ resource "azurerm_storage_account" "example" {
     git_repo             = "terragoat"
     yor_trace            = "23861ff4-c42d-495e-80ac-776c74035f43"
   }
-}
-
-resource "azurerm_storage_account_network_rules" "test" {
-  resource_group_name  = azurerm_resource_group.example.name
-  storage_account_name = azurerm_storage_account.example.name
-
-  default_action = "Deny"
-  ip_rules       = ["127.0.0.1"]
-  bypass         = ["Metrics"]
 }
