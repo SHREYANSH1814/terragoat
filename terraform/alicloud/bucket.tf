@@ -1,10 +1,16 @@
 resource "alicloud_oss_bucket" "bad_bucket" {
-  # Public and writeable bucket 
-  # Versioning isn't enabled
-  # Not Encrypted with a Customer Master Key and no Server side encryption
-  # Doesn't have access logging enabled" 
   bucket = "wildwestfreeforall"
   acl    = "public-read-write"
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "KMS"
+        kms_master_key_id = "your-cmk-id"  # Replace with your actual Customer Master Key ID
+      }
+    }
+  }
+
   tags = {
     git_commit           = "9c114f23d311f787c137723e1f71b27a52f0adec"
     git_file             = "terraform/alicloud/bucket.tf"
