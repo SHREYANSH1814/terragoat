@@ -27,14 +27,14 @@ resource "aws_elasticsearch_domain" "monitoring-framework" {
   }
 }
 
-data aws_iam_policy_document "policy" {
+data "aws_iam_policy_document" "policy" {
   statement {
-    actions = ["es:*"]
+    actions = ["es:ESHttpGet", "es:ESHttpPost", "es:ESHttpPut"]
     principals {
       type        = "AWS"
-      identifiers = ["*"]
+      identifiers = ["arn:aws:iam::123456789012:role/SpecificRole"]
     }
-    resources = ["*"]
+    resources = [aws_elasticsearch_domain.monitoring-framework.arn]
   }
 }
 
