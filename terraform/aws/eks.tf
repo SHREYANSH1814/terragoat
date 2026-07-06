@@ -59,6 +59,17 @@ resource aws_vpc "eks_vpc" {
   })
 }
 
+resource aws_flow_log "vpc_flow_log" {
+  log_destination      = aws_cloudwatch_log_group.vpc_flow_log_group.arn
+  log_destination_type = "cloud-watch-logs"
+  traffic_type         = "ALL"
+  vpc_id               = aws_vpc.eks_vpc.id
+}
+
+resource aws_cloudwatch_log_group "vpc_flow_log_group" {
+  name = "/aws/vpc/flow-logs/${aws_vpc.eks_vpc.id}"
+}
+
 resource aws_subnet "eks_subnet1" {
   vpc_id                  = aws_vpc.eks_vpc.id
   cidr_block              = "10.10.10.0/24"
