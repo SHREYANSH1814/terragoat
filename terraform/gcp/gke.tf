@@ -5,12 +5,12 @@ data "google_compute_zones" "available_zones" {
 
 resource "google_container_cluster" "workload_cluster" {
   name               = "terragoat-${var.environment}-cluster"
-  logging_service    = "none"
+  logging_service    = "logging.googleapis.com/kubernetes"
   location           = var.region
   initial_node_count = 1
 
   enable_legacy_abac       = true
-  monitoring_service       = "none"
+  monitoring_service       = "monitoring.googleapis.com/kubernetes"
   remove_default_node_pool = true
   network                  = google_compute_network.vpc.name
   subnetwork               = google_compute_subnetwork.public-subnetwork.name
