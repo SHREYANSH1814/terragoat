@@ -1,3 +1,11 @@
+variable "region" {
+  description = "AWS region"
+  type        = string
+  default     = "us-east-1"
+}
+
+data "aws_caller_identity" "current" {}
+
 resource "aws_iam_user" "user" {
   name          = "${local.resource_prefix.value}-user"
   force_destroy = true
@@ -38,7 +46,12 @@ resource "aws_iam_user_policy" "userpolicy" {
         "cloudwatch:*"
       ],
       "Effect": "Allow",
-      "Resource": "*"
+      "Resource": [
+        "arn:aws:ec2:${var.region}:${data.aws_caller_identity.current.account_id}:instance/*",
+        "arn:aws:s3:::example-bucket/*",
+        "arn:aws:lambda:${var.region}:${data.aws_caller_identity.current.account_id}:function:*",
+        "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:*"
+      ]
     }
   ]
 }
