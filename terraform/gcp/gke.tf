@@ -16,7 +16,7 @@ resource "google_container_cluster" "workload_cluster" {
   subnetwork               = google_compute_subnetwork.public-subnetwork.name
   master_authorized_networks_config {
     cidr_blocks {
-      cidr_block = "0.0.0.0/0"
+      cidr_block = "10.0.0.0/8"  # Replace with your trusted CIDR block(s)
     }
   }
 }
