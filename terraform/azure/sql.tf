@@ -56,8 +56,8 @@ resource "azurerm_mysql_server" "example" {
   auto_grow_enabled                 = true
   backup_retention_days             = 7
   infrastructure_encryption_enabled = true
-  public_network_access_enabled     = true
-  ssl_enforcement_enabled           = false
+  public_network_access_enabled     = false
+  ssl_enforcement_enabled           = true
   tags = {
     git_commit           = "81738b80d571fa3034633690d13ffb460e1e7dea"
     git_file             = "terraform/azure/sql.tf"
@@ -68,6 +68,40 @@ resource "azurerm_mysql_server" "example" {
     git_repo             = "terragoat"
     yor_trace            = "1ac18c16-09a4-41c9-9a66-6f514050178e"
   }
+}
+
+resource "azurerm_private_endpoint" "mysql_private_endpoint" {
+  name                = "mysql-private-endpoint-${var.environment}"
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+  subnet_id           = azurerm_subnet.example.id
+
+  private_service_connection {
+    name                           = "mysql-privateserviceconnection"
+    private_connection_resource_id = azurerm_mysql_server.example.id
+    is_manual_connection           = false
+    subresource_names              = ["mysqlServer"]
+  }
+}
+
+resource "azurerm_private_dns_zone" "mysql_private_dns_zone" {
+  name                = "privatelink.mysql.database.azure.com"
+  resource_group_name = azurerm_resource_group.example.name
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "mysql_dns_link" {
+  name                  = "mysql-dns-link-${var.environment}"
+  resource_group_name   = azurerm_resource_group.example.name
+  private_dns_zone_name = azurerm_private_dns_zone.mysql_private_dns_zone.name
+  virtual_network_id    = azurerm_virtual_network.example.id
+}
+
+resource "azurerm_private_dns_a_record" "mysql_private_dns_a_record" {
+  name                = azurerm_mysql_server.example.name
+  zone_name           = azurerm_private_dns_zone.mysql_private_dns_zone.name
+  resource_group_name = azurerm_resource_group.example.name
+  ttl                 = 300
+  records             = [azurerm_private_endpoint.mysql_private_endpoint.private_ip_address]
 }
 
 resource "azurerm_postgresql_server" "example" {
