@@ -125,6 +125,15 @@ resource "aws_s3_bucket" "logs" {
     }
   }
   force_destroy = true
+
+  notification {
+    lambda_function {
+      lambda_function_arn = aws_lambda_function.log_processor.arn
+      events              = ["s3:ObjectCreated:*"]
+      filter_prefix       = "log/"
+    }
+  }
+
   tags = merge({
     Name        = "${local.resource_prefix.value}-logs"
     Environment = local.resource_prefix.value
