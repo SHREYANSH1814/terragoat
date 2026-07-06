@@ -2,6 +2,10 @@ resource aws_ecr_repository "repository" {
   name                 = "${local.resource_prefix.value}-repository"
   image_tag_mutability = "MUTABLE"
 
+  encryption_configuration {
+    encryption_type = "KMS"
+    kms_key         = var.kms_key_arn
+  }
 
   tags = merge({
     Name = "${local.resource_prefix.value}-repository"
