@@ -10,6 +10,11 @@ resource "google_compute_instance" "server" {
     }
     auto_delete = true
   }
+  shielded_instance_config {
+    enable_secure_boot          = true
+    enable_vtpm                 = true
+    enable_integrity_monitoring = true
+  }
   network_interface {
     subnetwork = google_compute_subnetwork.public-subnetwork.name
     access_config {}
