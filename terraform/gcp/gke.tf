@@ -19,6 +19,10 @@ resource "google_container_cluster" "workload_cluster" {
       cidr_block = "0.0.0.0/0"
     }
   }
+
+  workload_metadata_config {
+    mode = "GKE_METADATA"
+  }
 }
 
 resource "google_container_node_pool" "custom_node_pool" {
