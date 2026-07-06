@@ -13,6 +13,12 @@ resource "azurerm_sql_server" "example" {
   version                      = "12.0"
   administrator_login          = "ariel"
   administrator_login_password = "Aa12345678"
+
+  azuread_administrator {
+    login = "aadadmin"
+    object_id = var.azuread_admin_object_id
+  }
+
   tags = merge({
     environment = var.environment
     terragoat   = "true"
