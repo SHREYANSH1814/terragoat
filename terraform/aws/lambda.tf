@@ -46,6 +46,12 @@ resource "aws_lambda_function" "analysis_lambda" {
       secret_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
     }
   }
+
+  vpc_config {
+    subnet_ids         = ["subnet-12345678", "subnet-87654321"]
+    security_group_ids = ["sg-12345678"]
+  }
+
   tags = {
     git_commit           = "5c6b5d60a8aa63a5d37e60f15185d13a967f0542"
     git_file             = "terraform/aws/lambda.tf"
