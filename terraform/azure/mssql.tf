@@ -62,6 +62,7 @@ resource "azurerm_mssql_server" "mssql3" {
   version                      = "12.0"
   administrator_login          = "missadministrator"
   administrator_login_password = "AdminPassword123!"
+  azuread_authentication_enabled = true
   tags = {
     git_commit           = "c6f8caa51942284d02465518822685897ad90141"
     git_file             = "terraform/azure/mssql.tf"
