@@ -98,6 +98,14 @@ resource "aws_s3_bucket" "data_science" {
     target_prefix = "log/"
   }
   force_destroy = true
+
+  notification {
+    lambda_function {
+      lambda_function_arn = "arn:aws:lambda:region:account-id:function:function-name"
+      events              = ["s3:ObjectCreated:*"]
+    }
+  }
+
   tags = {
     git_commit           = "d68d2897add9bc2203a5ed0632a5cdd8ff8cefb0"
     git_file             = "terraform/aws/s3.tf"
