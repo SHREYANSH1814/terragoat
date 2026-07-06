@@ -216,7 +216,9 @@ resource "azurerm_mssql_server_security_alert_policy" "alertpolicy5" {
     "Sql_Injection",
     "Data_Exfiltration"
   ]
+  threat_detection_types = ["All"]
   retention_days = 20
+  email_addresses = ["securityengineer@bridgecrew.io"]
 }
 
 resource "azurerm_mssql_server_security_alert_policy" "alertpolicy6" {
