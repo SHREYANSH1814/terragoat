@@ -43,6 +43,9 @@ resource "azurerm_mssql_server" "mssql2" {
   version                      = "12.0"
   administrator_login          = "missadministrator"
   administrator_login_password = "AdminPassword123!"
+
+  public_network_access_enabled = false
+
   tags = {
     git_commit           = "c6f8caa51942284d02465518822685897ad90141"
     git_file             = "terraform/azure/mssql.tf"
@@ -54,7 +57,20 @@ resource "azurerm_mssql_server" "mssql2" {
     yor_trace            = "096d2cf2-6d47-41b2-9418-cdedea85e184"
   }
 }
+resource "azurerm_private_endpoint" "mssql2_private_endpoint" {
+  name                = "mssql2-pe-${var.environment}${random_integer.rnd_int.result}"
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
 
+  subnet_id = azurerm_subnet.example.id
+
+  private_service_connection {
+    name                           = "mssql2-psc"
+    private_connection_resource_id = azurerm_mssql_server.mssql2.id
+    is_manual_connection           = false
+    subresource_names              = ["sqlServer"]
+  }
+}
 resource "azurerm_mssql_server" "mssql3" {
   name                         = "mssql3-${var.environment}${random_integer.rnd_int.result}"
   resource_group_name          = azurerm_resource_group.example.name
