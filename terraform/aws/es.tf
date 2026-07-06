@@ -10,11 +10,16 @@ resource "aws_elasticsearch_domain" "monitoring-framework" {
     dedicated_master_count   = 1
   }
 
-
   ebs_options {
     ebs_enabled = true
     volume_size = 30
   }
+
+  encrypt_at_rest {
+    enabled    = true
+    kms_key_id = var.kms_key_id
+  }
+
   tags = {
     git_commit           = "e6d83b21346fe85d4fe28b16c0b2f1e0662eb1d7"
     git_file             = "terraform/aws/es.tf"
