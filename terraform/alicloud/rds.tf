@@ -17,6 +17,10 @@ resource "alicloud_db_instance" "seeme" {
     name  = "connect_timeout"
     value = "50"
   }
+  parameters {
+    name  = "log_disconnections"
+    value = "ON"
+  }
   tags = {
     git_commit           = "c2ff052009d49c65e6af551eb1506abc73b5976c"
     git_file             = "terraform/alicloud/rds.tf"
