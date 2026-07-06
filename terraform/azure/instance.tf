@@ -26,6 +26,11 @@ resource azurerm_linux_virtual_machine "linux_machine" {
     storage_account_type = "Standard_LRS"
   }
 
+  # Ensure no VM extensions are installed
+  extension {
+    count = 0
+  }
+
   tags = merge({
     terragoat   = true
     environment = var.environment
