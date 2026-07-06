@@ -9,6 +9,7 @@ resource "google_compute_subnetwork" "public-subnetwork" {
   ip_cidr_range = "10.0.0.0/24"
   region        = var.region
   network       = google_compute_network.vpc.id
+  enable_flow_logs = true
 
   secondary_ip_range {
     range_name    = "tf-test-secondary-range-update1"
