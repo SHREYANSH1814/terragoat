@@ -124,6 +124,12 @@ resource "aws_s3_bucket" "logs" {
       }
     }
   }
+  public_access_block {
+    block_public_acls       = true
+    block_public_policy     = true
+    ignore_public_acls      = true
+    restrict_public_buckets = true
+  }
   force_destroy = true
   tags = merge({
     Name        = "${local.resource_prefix.value}-logs"
