@@ -1,4 +1,5 @@
 resource "aws_kms_key" "logs_key" {
+  enable_key_rotation = true
   # key does not have rotation enabled
   description = "${local.resource_prefix.value}-logs bucket key"
 
