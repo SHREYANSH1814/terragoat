@@ -1,4 +1,5 @@
 resource "aws_db_instance" "default" {
+  copy_tags_to_snapshot = true
 
   name                   = var.dbname
   engine                 = "mysql"
