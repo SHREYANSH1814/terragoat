@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 resource "aws_elasticsearch_domain" "monitoring-framework" {
   domain_name           = "tg-${var.environment}-es"
   elasticsearch_version = "2.3"
@@ -34,7 +36,7 @@ data aws_iam_policy_document "policy" {
       type        = "AWS"
       identifiers = ["*"]
     }
-    resources = ["*"]
+    resources = ["arn:aws:es:${var.region}:${data.aws_caller_identity.current.account_id}:domain/tg-${var.environment}-es/*"]
   }
 }
 
