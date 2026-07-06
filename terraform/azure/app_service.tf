@@ -47,9 +47,19 @@ resource azurerm_app_service "app-service2" {
   resource_group_name = azurerm_resource_group.example.name
   https_only          = true
 
+  site_config {
+    azure_files_storage {
+      account_name      = azurerm_storage_account.example.name
+      share_name        = azurerm_storage_share.example.name
+      access_key        = azurerm_storage_account.example.primary_access_key
+      mount_path        = "/mnt/azure"
+    }
+  }
+
   auth_settings {
     enabled = false
   }
+
   tags = {
     git_commit           = "5c6b5d60a8aa63a5d37e60f15185d13a967f0542"
     git_file             = "terraform/azure/app_service.tf"
