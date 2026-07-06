@@ -5,6 +5,21 @@ resource "azurerm_storage_account" "security_storage_account" {
   account_tier              = "Standard"
   account_replication_type  = "LRS"
   enable_https_traffic_only = true
+
+  # Enable encryption with Customer Managed Key
+  encryption {
+    services {
+      blob {
+        enabled = true
+      }
+      file {
+        enabled = true
+      }
+    }
+    key_source = "Microsoft.Keyvault"
+    key_vault_key_id = var.key_vault_key_id
+  }
+
   tags = {
     git_commit           = "a1d1c1ce31a1bde6dafa188846d90eca82abe5fd"
     git_file             = "terraform/azure/mssql.tf"
