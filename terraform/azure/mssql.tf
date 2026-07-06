@@ -5,6 +5,14 @@ resource "azurerm_storage_account" "security_storage_account" {
   account_tier              = "Standard"
   account_replication_type  = "LRS"
   enable_https_traffic_only = true
+
+  blob_properties {
+    delete_retention_policy {
+      enabled = true
+      days    = 7
+    }
+  }
+
   tags = {
     git_commit           = "a1d1c1ce31a1bde6dafa188846d90eca82abe5fd"
     git_file             = "terraform/azure/mssql.tf"
