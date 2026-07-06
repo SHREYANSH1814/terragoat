@@ -20,6 +20,9 @@ resource "google_sql_database_instance" "master_instance" {
 
 resource "google_bigquery_dataset" "dataset" {
   dataset_id = "terragoat_${var.environment}_dataset"
+  default_encryption_configuration {
+    kms_key_name = var.kms_key_name
+  }
   access {
     special_group = "allAuthenticatedUsers"
     role          = "READER"
@@ -34,4 +37,8 @@ resource "google_bigquery_dataset" "dataset" {
     git_repo             = "terragoat"
     yor_trace            = "2560d883-bc3a-4cb6-b9fc-fb666edf626e"
   }
+}
+variable "kms_key_name" {
+  description = "The resource name of the KMS key to use for default encryption of BigQuery datasets."
+  type        = string
 }
