@@ -23,8 +23,8 @@ resource "aws_iam_access_key" "user" {
 }
 
 resource "aws_iam_user_policy" "userpolicy" {
-  name = "excess_policy"
-  user = "${aws_iam_user.user.name}"
+  name = "restricted_policy"
+  user = aws_iam_user.user.name
 
   policy = <<EOF
 {
@@ -32,13 +32,18 @@ resource "aws_iam_user_policy" "userpolicy" {
   "Statement": [
     {
       "Action": [
-        "ec2:*",
-        "s3:*",
-        "lambda:*",
-        "cloudwatch:*"
+        "ec2:DescribeInstances",
+        "s3:GetObject",
+        "lambda:InvokeFunction",
+        "cloudwatch:GetMetricData"
       ],
       "Effect": "Allow",
-      "Resource": "*"
+      "Resource": [
+        "arn:aws:ec2:${var.region}:${var.account_id}:instance/*",
+        "arn:aws:s3:::${local.resource_prefix.value}-bucket/*",
+        "arn:aws:lambda:${var.region}:${var.account_id}:function:${local.resource_prefix.value}-function",
+        "arn:aws:cloudwatch::${var.account_id}:metric/CustomNamespace/*"
+      ]
     }
   ]
 }
