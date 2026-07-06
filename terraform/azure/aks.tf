@@ -13,7 +13,8 @@ resource azurerm_kubernetes_cluster "k8s_cluster" {
   }
   addon_profile {
     oms_agent {
-      enabled = false
+      enabled = true
+      log_analytics_workspace_id = azurerm_log_analytics_workspace.example.id
     }
     kube_dashboard {
       enabled = true
@@ -32,4 +33,11 @@ resource azurerm_kubernetes_cluster "k8s_cluster" {
     git_repo             = "terragoat"
     yor_trace            = "6103d111-864e-42e5-899c-1864de281fd1"
   }
+}
+resource "azurerm_log_analytics_workspace" "example" {
+  name                = "example-law"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.example.name
+  sku                 = "PerGB2018"
+  retention_in_days   = 30
 }
