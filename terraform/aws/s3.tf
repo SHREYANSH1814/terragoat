@@ -97,6 +97,19 @@ resource "aws_s3_bucket" "data_science" {
     target_bucket = "${aws_s3_bucket.logs.id}"
     target_prefix = "log/"
   }
+  lifecycle_rule {
+    id      = "log"
+    enabled = true
+
+    expiration {
+      days = 365
+    }
+
+    noncurrent_version_expiration {
+      days = 90
+    }
+  }
+
   force_destroy = true
   tags = {
     git_commit           = "d68d2897add9bc2203a5ed0632a5cdd8ff8cefb0"
