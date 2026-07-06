@@ -170,12 +170,10 @@ resource "azurerm_mssql_server_security_alert_policy" "alertpolicy2" {
   state                      = "Enabled"
   storage_endpoint           = azurerm_storage_account.security_storage_account.primary_blob_endpoint
   storage_account_access_key = azurerm_storage_account.security_storage_account.primary_access_key
-  disabled_alerts = [
-    "Sql_Injection",
-    "Data_Exfiltration"
-  ]
-  retention_days  = 20
-  email_addresses = ["securityengineer@bridgecrew.io"]
+  disabled_alerts            = []
+  retention_days             = 20
+  email_addresses            = ["securityengineer@bridgecrew.io"]
+  threat_detection_types     = ["Sql_Injection", "Data_Exfiltration", "Access_Anomaly", "Usage_Anomaly", "Potential_SQL_Injection", "Access_Anomaly"]
 }
 
 resource "azurerm_mssql_server_security_alert_policy" "alertpolicy3" {
