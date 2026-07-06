@@ -6,7 +6,6 @@ resource "alicloud_db_instance" "seeme" {
   instance_storage = "10"
   tde_status       = "Enabled"
   security_ips = [
-    "0.0.0.0",
     "10.23.12.24/24"
   ]
   parameters {
