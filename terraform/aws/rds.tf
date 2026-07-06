@@ -50,6 +50,7 @@ resource "aws_rds_cluster" "app4-rds-cluster" {
   cluster_identifier      = "app4-rds-cluster"
   allocated_storage       = 10
   backup_retention_period = 15
+  backup_window           = "03:00-06:00"
   tags = {
     git_commit           = "079fe74f6b96d887c245664fbd8cf676c92f20e5"
     git_file             = "terraform/aws/rds.tf"
@@ -60,6 +61,52 @@ resource "aws_rds_cluster" "app4-rds-cluster" {
     git_repo             = "terragoat"
     yor_trace            = "284aaeed-fd3f-4b7a-b5f8-61a8457f4d83"
   }
+}
+
+resource "aws_backup_plan" "app4_backup_plan" {
+  name = "app4-rds-cluster-backup-plan"
+
+  rule {
+    rule_name         = "daily-backup"
+    target_vault_name = "default"
+    schedule          = "cron(0 5 ? * * *)"
+    lifecycle {
+      cold_storage_after = 30
+      delete_after       = 90
+    }
+  }
+}
+
+resource "aws_backup_selection" "app4_backup_selection" {
+  name          = "app4-rds-cluster-backup-selection"
+  iam_role_arn  = aws_iam_role.backup_role.arn
+  backup_plan_id = aws_backup_plan.app4_backup_plan.id
+
+  resources = [
+    aws_rds_cluster.app4-rds-cluster.arn
+  ]
+}
+
+resource "aws_iam_role" "backup_role" {
+  name = "app4_backup_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "backup.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "backup_role_policy" {
+  role       = aws_iam_role.backup_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup"
 }
 
 resource "aws_rds_cluster" "app5-rds-cluster" {
