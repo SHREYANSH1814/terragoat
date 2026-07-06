@@ -55,6 +55,7 @@ resource "azurerm_mysql_server" "example" {
 
   auto_grow_enabled                 = true
   backup_retention_days             = 7
+  geo_redundant_backup_enabled     = true
   infrastructure_encryption_enabled = true
   public_network_access_enabled     = true
   ssl_enforcement_enabled           = false
