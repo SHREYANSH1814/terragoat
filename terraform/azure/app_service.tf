@@ -47,6 +47,19 @@ resource azurerm_app_service "app-service2" {
   resource_group_name = azurerm_resource_group.example.name
   https_only          = true
 
+  site_config {
+    http_logs {
+      file_system {
+        retention_in_days = 7
+        retention_in_mb   = 35
+      }
+      azure_blob_storage {
+        retention_in_days = 7
+        sas_url           = ""
+      }
+    }
+  }
+
   auth_settings {
     enabled = false
   }
