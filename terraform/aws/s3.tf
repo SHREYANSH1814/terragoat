@@ -5,6 +5,20 @@ resource "aws_s3_bucket" "data" {
   # bucket does not have versioning
   bucket        = "${local.resource_prefix.value}-data"
   force_destroy = true
+
+  lifecycle_rule {
+    id      = "log"
+    enabled = true
+
+    expiration {
+      days = 90
+    }
+
+    noncurrent_version_expiration {
+      days = 30
+    }
+  }
+
   tags = merge({
     Name        = "${local.resource_prefix.value}-data"
     Environment = local.resource_prefix.value
